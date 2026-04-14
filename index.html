@@ -46,41 +46,48 @@ body {
    INTRO — ENVELOPE SCREEN
 ═══════════════════════════════════════════ */
 /* ── ИСПРАВЛЕННЫЙ ИНТРО (БЕЗ БЕЛОГО ОКНА) ── */
+/* ── FULLSCREEN ADAPTIVE INTRO ── */
 #intro {
   position: fixed;
   inset: 0;
-  z-index: 1000; /* Самый верхний слой */
-  background: transparent; /* Прозрачный фон, чтобы видеть основной сайт */
+  z-index: 1000;
+  background: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .env-stage {
   position: absolute;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
 }
 
 .env-body {
   position: relative;
   width: 100%;
   height: 100%;
-  background: transparent !important; /* УБИРАЕМ БЕЛЫЙ ФОН ИЗ ФОТО 64bb3e */
-  box-shadow: none !important;      /* Убираем тени */
-  border-radius: 0 !important;      /* Убираем скругления */
+  background: transparent !important;
 }
 
-/* Растягиваем треугольники на весь экран */
+/* ОБЩИЕ СТИЛИ ШТОРОК */
 .env-triangle {
   position: absolute;
-  width: 0;
-  height: 0;
+  width: 100%;
+  height: 50.5vh; /* 0.5 для нахлеста, чтобы не было щели */
+  background-color: var(--env-d);
   z-index: 5;
-  transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), 
-              opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* ВЕРХНИЙ ТРЕУГОЛЬНИК */
+
 
 /* ── ОБНОВЛЕННЫЙ ВЕРХНИЙ ТРЕУГОЛЬНИК С ТЕКСТОМ ── */
 .env-triangle.top {
@@ -103,62 +110,62 @@ body {
               opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Красивые надписи на открытке */
+/* ТЕКСТ НА ВЕРХНЕМ ТРЕУГОЛЬНИКЕ */
 .card-inscription {
+  position: absolute;
+  top: 15%; /* Позиция на мобильном */
   text-align: center;
-  color: white; /* Цвет текста на синем фоне */
-  padding-bottom: 80px; /* Смещаем текст чуть выше центра, ближе к вершине */
-  opacity: 1;
-  transition: opacity 0.8s ease-out;
+  color: white;
+  width: 100%;
+  padding: 0 20px;
 }
 
-/* Заголовок "Приглашение" — используем Cormorant SC */
 .ins-title {
   font-family: 'Cormorant SC', serif;
-  font-size: 22px;
-  font-weight: 300;
-  letter-spacing: 5px;
+  font-size: 5vw; /* Адаптивный размер от ширины экрана */
+  letter-spacing: 0.5em;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
-/* Амперсанд "&" — используем Great Vibes (как в "и") */
 .ins-amp {
   font-family: 'Great Vibes', cursive;
-  font-size: 50px;
-  color: var(--gold-l); /* Используем светлое золото */
-  line-height: 1;
-  margin-bottom: 10px;
+  font-size: 12vw;
+  color: var(--gold-l);
+  margin: 5px 0;
 }
 
-/* Подзаголовок "Свадебное торжество" — используем Cormorant SC */
 .ins-sub {
   font-family: 'Cormorant SC', serif;
-  font-size: 14px;
-  font-weight: 300;
-  letter-spacing: 3px;
+  font-size: 3vw;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
+/* НИЖНИЙ ТРЕУГОЛЬНИК */
 .env-triangle.bottom {
-  border-left: 50vw solid transparent;
-  border-right: 50vw solid transparent;
-  border-bottom: 52vh solid var(--env);
   bottom: 0;
+  height: 50.5vh;
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+  background-color: var(--env);
+}
+
+/* БОКОВЫЕ (Сделаем их чуть шире для объема) */
+.env-triangle.left, .env-triangle.right {
+  height: 100vh;
+  width: 100%;
+  background-color: var(--env-l);
+  z-index: 4; /* Под верхним и нижним */
 }
 
 .env-triangle.left {
-  border-top: 50vh solid transparent;
-  border-bottom: 50vh solid transparent;
-  border-left: 50vw solid var(--env-l);
   left: 0;
+  clip-path: polygon(0 0, 50% 50%, 0 100%);
 }
 
 .env-triangle.right {
-  border-top: 50vh solid transparent;
-  border-bottom: 50vh solid transparent;
-  border-right: 50vw solid var(--env-l);
   right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 50% 50%);
 }
 
 /* Убираем текст из интро, он не нужен, если мы хотим сразу видеть фото */
@@ -177,36 +184,36 @@ body {
   transform: translateY(-100%);
   opacity: 0;
 }
+/* АНИМАЦИЯ ОТКРЫТИЯ */
 .env-stage.open .env-triangle.bottom { transform: translateY(100%); opacity: 0; }
-.env-stage.open .env-triangle.left,
-.env-stage.open .env-triangle.right { opacity: 0; }
+.env-stage.open .env-triangle.left { opacity: 0; transform: scale(1.05); }
+.env-stage.open .env-triangle.right { opacity: 0; transform: scale(1.05); }
 
-/* Печать */
+/* ПЕЧАТЬ */
 .wax-seal {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
+  width: 80px;
+  height: 80px;
   background: radial-gradient(circle at 35% 32%, var(--gold-l), var(--gold));
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-  transition: all 0.6s ease;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
   font-size: 10px;
   letter-spacing: 1px;
-  color: white;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: all 0.6s ease;
 }
 
 .env-stage.open .wax-seal {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.5);
-  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
 }
 /* ═══════════════════════════════════════════
    TOP BAR
@@ -699,16 +706,15 @@ textarea:focus {
     <div class="env-body">
       <div class="env-triangle left"></div>
       <div class="env-triangle right"></div>
+      <div class="env-triangle bottom"></div>
       
       <div class="env-triangle top">
         <div class="card-inscription">
           <div class="ins-title">Приглашение</div>
-          <div class="ins-amp">&amp;</div>
+          <div class="ins-amp">и</div>
           <div class="ins-sub">Свадебное торжество</div>
         </div>
       </div>
-      
-      <div class="env-triangle bottom"></div>
 
       <div class="wax-seal" id="waxSeal" onclick="openEnvelope()">
         <span>ОТКРЫТЬ</span>
