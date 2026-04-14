@@ -317,87 +317,129 @@ clip-path: polygon(100% 100%, 0 100%, 50% 48%);
 }
 
 /* ═══════════════════════════════════════════
-   HERO SECTION
-═══════════════════════════════════════════ */
-.hero {
-  background: linear-gradient(160deg, var(--sky-lightest) 0%, var(--sky-lighter) 40%, var(--sky-light) 100%);
-  text-align: center;
-  padding: 56px 24px 64px;
-  position: relative;
-  overflow: hidden;
+       HERO SECTION (ОБНОВЛЕННЫЙ)
+       ═══════════════════════════════════════════ */
+    .hero {
+      text-align: center;
+      padding: 140px 24px 64px; /* Тот же padding, что мы обсуждали */
+      position: relative;
+      
+      /* Изменено для анимации: */
+      min-height: 180vh; /* Увеличили высоту, чтобы было время для скролла анимации */
+      background-image: url(2.jpg);
+  background-size: contain;         /* Оригинальный размер */
+  background-position: center top;     /* Центрирование по горизонтали и вертикали */
+  background-repeat: no-repeat;
+    }
+
+    /* Градиентные блики (оставляем) */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(186, 230, 253, 0.6) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(245, 215, 142, 0.2) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1; /* Чтобы были под SVG */
+    }
+
+    /* Точечный узор (оставляем) */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* --- СТИЛИ ДЛЯ ИНТЕГРАЦИИ SVG-АНИМАЦИИ --- */
+    .svg-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* Чтобы SVG не мешал кликать по тексту */
+      z-index: 10; /* Поверх всего контента */
+    }
+
+    .svg-container {
+      width: 60%;
+      max-width: 600px;
+      margin: 0 auto;
+      position: sticky; /* Ключевой момент */
+      top: 10vh; /* Где SVG застынет при скролле (подстройте под руки) */
+      opacity: 0.8; /* Чуть прозрачный, чтобы руки просвечивали */
+    }
+
+    #path-s {
+      fill: none;
+      stroke: rgba(0, 0, 0, 0.05); /* Очень бледная линия */
+      stroke-width: 3;
+    }
+
+  #heart {
+  fill: #ff0044; /* Насыщенный красный */
+  /* Красное свечение */
+  filter: drop-shadow(0 0 5px #ff0044) drop-shadow(0 0 15px #ff4477);
 }
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 80%, rgba(186, 230, 253, 0.6) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(245, 215, 142, 0.2) 0%, transparent 50%);
-  pointer-events: none;
-}
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-}
-.hero-date {
-  font-family: 'Cormorant SC', serif;
-  font-size: 12px;
-  letter-spacing: 5px;
-  color: var(--gold-d);
-  margin-bottom: 28px;
-  opacity: 0;
-  animation: fadeDown 1s 0.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.hero-name {
-  font-family: 'Cormorant SC', serif;
-  font-weight: 300;
-  letter-spacing: 8px;
-  font-size: 44px;
-  line-height: 1;
-  color: var(--text-dark);
-  opacity: 0;
-  animation: fadeDown 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.hero-name.bride { animation-delay: 0.3s; }
-.hero-name.groom { animation-delay: 0.7s; }
-.hero-amp {
-  font-family: 'Great Vibes', cursive;
-  font-size: 56px;
-  color: var(--gold-d);
-  display: block;
-  margin: 6px 0;
-  opacity: 0;
-  animation: fadeDown 1s 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.hero-tagline {
-  margin-top: 24px;
-  font-size: 13px;
-  letter-spacing: 1.5px;
-  color: var(--text-medium);
-  text-transform: uppercase;
-  opacity: 0;
-  animation: fadeDown 1s 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.hero-venue {
-  margin-top: 8px;
-  font-size: 15px;
-  color: var(--sky-deep);
-  letter-spacing: 0.5px;
-  opacity: 0;
-  animation: fadeDown 1s 1.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.hero-quote {
-  font-family: 'Great Vibes', cursive;
-  font-size: 32px;
-  color: var(--text-dark);
-  margin-top: 28px;
-  opacity: 0;
-  animation: fadeDown 1s 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
+    /* ------------------------------------------ */
+
+
+    /* Стили текста (оставляем старые) */
+    .hero-content-wrapper {
+        position: relative;
+        z-index: 5; /* Под SVG */
+    }
+
+    .hero-date {
+      font-size: 16px;
+      letter-spacing: 5px;
+      color: var(--gold-d);
+      margin-bottom: 28px;
+    }
+
+    .hero-name {
+      /* font-family: 'PopularScript', serif; // В вашем примере, убедитесь, что подключен */
+      font-weight: 300;
+      letter-spacing: 8px;
+      font-size: 44px;
+      line-height: 1;
+      color: var(--text-dark);
+    }
+
+    .hero-amp {
+      font-family: 'Great Vibes', cursive;
+      font-size: 56px;
+      color: var(--gold-d);
+      display: block;
+      margin: 15px 0; /* Подстроили под руки */
+    }
+
+    .hero-tagline {
+      margin-top: 60px; /* Оттолкнули текст под руки */
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      color: var(--text-medium);
+      text-transform: uppercase;
+    }
+
+    .hero-venue {
+      margin-top: 8px;
+      font-size: 15px;
+      color: var(--sky-deep);
+      letter-spacing: 0.5px;
+    }
+
+    .hero-quote {
+      font-family: 'Great Vibes', cursive;
+      font-size: 32px;
+      color: var(--text-dark);
+      margin-top: 28px;
+    }
 
 /* ═══════════════════════════════════════════
    COUNTDOWN
@@ -796,14 +838,58 @@ textarea:focus {
   </div>
 
   <div class="hero">
-    <div class="hero-date">20 · 08 · 2026</div>
-    <div class="hero-name bride">АЗИЗБЕК</div>
-    <span class="hero-amp">и</span>
-    <div class="hero-name groom">САРВИНОЗ</div>
-    <div class="hero-tagline">Приглашаем разделить радость нашей свадьбы</div>
-    <div class="hero-venue">20 августа 2026 · Ресторан «Корона» · Красноярск</div>
-    <div class="hero-quote">Ждём всех на нашей свадьбе!</div>
+    
+    <div class="svg-wrapper">
+      <div class="svg-container">
+        <svg viewBox="0 0 200 350" xmlns="http://www.w3.org/2000/svg">
+            <path id="path-s" d="M150,50 C150,50 50,20 50,110 C50,200 150,150 150,240 C150,330 50,300 50,300" stroke-linecap="round"/>
+            
+            <path id="heart" 
+      d="M10,30 A5,5 0,0,1 20,30 A5,5 0,0,1 30,30 Q30,40 20,50 Q10,40 10,30 Z" 
+      fill="#ff0044" 
+      transform="scale(1.0) translate(-10, -18)" />
+        </svg>
+      </div>
+    </div>
+    
+    <div class="hero-content-wrapper">
+        <div class="hero-date">20 · 08 · 2026</div>
+        <div class="hero-name bride">Azizbek</div>
+        <span class="hero-amp">and</span>
+        <div class="hero-name groom">Sarvinoz</div>
+        
+        <div class="hero-tagline">Приглашаем разделить радость нашей свадьбы</div>
+        <div class="hero-venue">20 августа 2026 · Ресторан «Корона» · Красноярск</div>
+        
+        <div class="hero-quote">Ждём всех на нашей свадьбе!</div>
+    </div>
+
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+
+  <script>
+    // 1. Регистрируем плагины
+    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+
+    // 2. Анимация точки по траектории
+    // Анимация сердечка по траектории
+gsap.to("#heart", {
+  scrollTrigger: {
+    trigger: ".hero",
+    start: "top top",
+    end: "bottom bottom",
+    scrub: 1.5,
+  },
+  motionPath: {
+    path: "#path-s",
+    align: "#path-s",
+    alignOrigin: [0.5, 0.5] // Чтобы сердце летело ровно центром по линии
+  },
+  ease: "none"
+});
+  </script>
 
   <div class="countdown-wrap">
     <hr class="cd-divider">
@@ -881,30 +967,39 @@ textarea:focus {
     </div>
   </section>
 
-  <section class="reveal highlight">
+<section class="reveal highlight">
     <div class="section-label">ПОДТВЕРЖДЕНИЕ</div>
     <p style="text-align:center; color:var(--text-medium); font-size:15px; margin-bottom:28px;">
-      Пожалуйста, подтвердите своё присутствие до 01.08.2026
+        Пожалуйста, подтвердите своё присутствие до 01.08.2026
     </p>
-    <div class="cursive-line" style="font-size:34px; margin-bottom:28px;">Ждём всех на свадьбе!</div>
+    
     <div class="form-wrap">
-      <label class="form-label">💬 Добавить сообщение для жениха и невесты</label>
-      <textarea id="msg-input" placeholder="Ваше пожелание..."></textarea>
-      <div class="checkbox-row">
-        <input type="checkbox" id="gift-check">
-        <label for="gift-check">Денежный подарок</label>
-      </div>
-      <button class="btn-confirm" onclick="confirmAttendance()">
-        ✓ &nbsp;Подтвердить присутствие
-      </button>
-      <button class="btn-main" onclick="sendToTelegram()">
-        ✈ &nbsp;Отправить
-      </button>
-      <div class="success-msg" id="success-msg">
-        Спасибо! Сообщение отправлено 🎉
-      </div>
+        <label class="form-label">👤 Ваше имя и фамилия</label>
+        <input type="text" id="name-input" placeholder="Кто вы?" 
+               style="width: 100%; padding: 12px; border: 1px solid var(--sky-light); border-radius: 8px; margin-bottom: 20px; outline: none; font-family: inherit;">
+
+        <div class="checkbox-row" style="margin-bottom: 15px;">
+            <input type="checkbox" id="confirm-check">
+            <label for="confirm-check" style="font-weight: 600; color: var(--sky-dark);">Я подтверждаю свое присутствие</label>
+        </div>
+
+        <div class="checkbox-row">
+            <input type="checkbox" id="gift-check">
+            <label for="gift-check">Планирую денежный подарок</label>
+        </div>
+
+        <label class="form-label" style="margin-top: 20px;">💬 Сообщение для жениха и невесты</label>
+        <textarea id="msg-input" placeholder="Ваше пожелание (необязательно)..."></textarea>
+        
+        <button class="btn-main" onclick="sendToTelegram()" style="width: 100%; margin-top: 15px;">
+            ✈ &nbsp;Отправить подтверждение
+        </button>
+
+        <div class="success-msg" id="success-msg" style="display: none; text-align: center; margin-top: 15px; color: green; font-weight: bold;">
+            Спасибо! Сообщение отправлено 🎉
+        </div>
     </div>
-  </section>
+</section>
 
   <section class="reveal">
     <div class="schedule-title">Свадебное расписание</div>
@@ -953,18 +1048,19 @@ textarea:focus {
   <div class="footer">
     <div class="footer-names">Азизбек &amp; Сарвиноз</div>
     <div class="footer-sub">20 · 08 · 2026 &nbsp;·&nbsp; КРАСНОЯРСК</div>
-    <div class="footer-sub" style="margin-top:10px;">Wedding Post · Сервис свадебных приглашений</div>
+    <div class="footer-sub" style="margin-top:10px;">ТГ: <a href="https://t.me/weddingqr">@weddingqr</a>  · Сервис свадебных приглашений</div>
   </div>
 </div>
 
 <script>
+/* ── КОНФИГУРАЦИЯ ── */
 const TG_BOT_TOKEN = '8456086614:AAEORuZmFI5jxCMe1VKNtnHFkc1Horzj--c';
 const TG_CHAT_ID = '5758126711';
 const TG_USERNAME = 'jasurbek27';
 
 let envelopeOpened = false;
 
-// Основная функция открытия
+/* ── ЛОГИКА ОТКРЫТИЯ ── */
 function openEnvelope() {
   if (envelopeOpened) return;
   envelopeOpened = true;
@@ -973,17 +1069,17 @@ function openEnvelope() {
   const intro = document.getElementById('intro');
   const mainContent = document.getElementById('main-content');
   
-  // 1. Запускаем анимацию (уезд верхнего/нижнего и исчезновение боковых)
+  // 1. Анимация треугольников
   stage.classList.add('open');
 
-  // 2. Разрешаем прокрутку страницы
+  // 2. Включаем скролл
   document.body.style.overflow = 'auto';
   document.documentElement.style.overflow = 'auto';
 
-  // 3. Плавно проявляем основной контент
+  // 3. Показываем контент
   if (mainContent) mainContent.classList.add('visible');
 
-  // 4. Полностью удаляем слой интро через некоторое время
+  // 4. Удаляем интро через 1.5 сек
   setTimeout(() => {
     intro.style.opacity = '0';
     setTimeout(() => {
@@ -992,116 +1088,154 @@ function openEnvelope() {
   }, 600);
 }
 
-// ── СЛУШАТЕЛИ СОБЫТИЙ ──
+/* ── СЛУШАТЕЛИ (СКРОЛЛ И СВАЙП) ── */
 
-// 1. Клик по печати (уже есть в HTML через onclick)
-
-// 2. Скролл колесиком мыши (Desktop)
-window.addEventListener('wheel', (event) => {
-  if (event.deltaY > 0 && !envelopeOpened) {
-    openEnvelope();
-  }
+// Колесико мыши
+window.addEventListener('wheel', (e) => {
+  if (e.deltaY > 0 && !envelopeOpened) openEnvelope();
 }, { passive: true });
 
-// 3. Свайп на мобильных устройствах
+// Свайп на телефоне
 let touchStartY = 0;
-
 window.addEventListener('touchstart', (e) => {
   touchStartY = e.touches[0].clientY;
 }, { passive: true });
 
 window.addEventListener('touchmove', (e) => {
   if (envelopeOpened) return;
-  
   let touchEndY = e.touches[0].clientY;
-  // Если тянем палец вверх (скроллим вниз) более чем на 30 пикселей
-  if (touchStartY - touchEndY > 30) {
-    openEnvelope();
-  }
+  if (touchStartY - touchEndY > 40) openEnvelope(); // Свайп вверх
 }, { passive: true });
 
-// Инициализация при загрузке
+// Блокировка скролла при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-  // Блокируем скролл изначально
   document.body.style.overflow = 'hidden';
   document.documentElement.style.overflow = 'hidden';
+  updateCD();
 });
 
-let scrollTriggered = false;
-window.addEventListener('scroll', () => {
-  if (!scrollTriggered && window.scrollY > 30) {
-    scrollTriggered = true;
-    openEnvelope();
-  }
-}, { passive: true });
-
-document.body.style.overflow = 'hidden';
-
+/* ── ОБРАТНЫЙ ОТСЧЕТ ── */
 const weddingDate = new Date('2026-08-20T18:00:00');
 function updateCD() {
   const diff = weddingDate - new Date();
   if (diff <= 0) return;
   const s = Math.floor(diff / 1000);
   const pad = n => String(n).padStart(2, '0');
-  document.getElementById('cd-w').textContent = pad(Math.floor(s / (7*86400)));
-  document.getElementById('cd-d').textContent = pad(Math.floor((s % (7*86400)) / 86400));
-  document.getElementById('cd-h').textContent = pad(Math.floor((s % 86400) / 3600));
-  document.getElementById('cd-m').textContent = pad(Math.floor((s % 3600) / 60));
-  document.getElementById('cd-s').textContent = pad(s % 60);
+  
+  const w = Math.floor(s / (7*86400));
+  const d = Math.floor((s % (7*86400)) / 86400);
+  const h = Math.floor((s % 86400) / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+
+  if(document.getElementById('cd-w')) document.getElementById('cd-w').textContent = pad(w);
+  if(document.getElementById('cd-d')) document.getElementById('cd-d').textContent = pad(d);
+  if(document.getElementById('cd-h')) document.getElementById('cd-h').textContent = pad(h);
+  if(document.getElementById('cd-m')) document.getElementById('cd-m').textContent = pad(m);
+  if(document.getElementById('cd-s')) document.getElementById('cd-s').textContent = pad(sec);
 }
-updateCD();
 setInterval(updateCD, 1000);
 
-document.getElementById('cal-btn').addEventListener('click', e => {
-  e.preventDefault();
-  window.open(
-    'https://www.google.com/calendar/render?action=TEMPLATE' +
-    '&text=Свадьба+Азизбека+%26+Сарвиноз' +
-    '&dates=20260820T180000/20260820T230000' +
-    '&location=Ресторан+Корона,+Красноярск', '_blank'
-  );
-});
+/* ═══════════ TELEGRAM LOGIC ═══════════ */
 
-const obs = new IntersectionObserver(
-  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-  { threshold: 0.1 }
-);
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-function confirmAttendance() {
-  const gift = document.getElementById('gift-check').checked;
-  sendTelegram('✅ Гость подтвердил присутствие на свадьбе!' + (gift ? '\n🎁 Денежный подарок' : ''));
-}
 function sendToTelegram() {
-  const msg = document.getElementById('msg-input').value.trim();
+  // Получаем данные из полей
+  const isConfirmed = document.getElementById('confirm-check').checked;
+  const guestName = document.getElementById('name-input').value.trim();
   const gift = document.getElementById('gift-check').checked;
-  const text = msg
-    ? '💌 Сообщение от гостя:\n\n' + msg + (gift ? '\n\n🎁 Денежный подарок' : '')
-    : '✅ Гость подтвердил присутствие' + (gift ? '\n🎁 Денежный подарок' : '');
-  sendTelegram(text);
-}
-function sendTelegram(text) {
-  if (TG_BOT_TOKEN === '8456086614:AAEORuZmFI5jxCMe1VKNtnHFkc1Horzj--c') {
-    window.open('https://t.me/' + TG_USERNAME + '?text=' + encodeURIComponent(text), '_blank');
-    showSuccess();
+  const msg = document.getElementById('msg-input').value.trim();
+
+  // 1. Проверка: подтвердил ли присутствие
+  if (!isConfirmed) {
+    alert("Пожалуйста, подтвердите свое присутствие, поставив галочку.");
     return;
   }
-  fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
+
+  // 2. Проверка: ввел ли имя
+  if (guestName === "") {
+    alert("Пожалуйста, введите ваше имя в поле 'Кто вы?'");
+    return;
+  }
+
+  // Формируем красивый текст для Telegram
+  let text = `👰🤵 НОВОЕ ПОДТВЕРЖДЕНИЕ\n\n`;
+  text += `👤 Имя: ${guestName}\n`;
+  text += `✅ Статус: Придет на свадьбу\n`;
+  text += `🎁 Подарок: ${gift ? 'Денежный 💵' : 'Пока не указано'}\n`;
+  if (msg) {
+    text += `💌 Сообщение: ${msg}`;
+  }
+
+  // Отправляем данные
+  sendTelegram(text);
+}
+
+function sendTelegram(text) {
+  // 1. Сначала отправляем сообщение БОТУ в фоновом режиме (скрыто)
+  fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: TG_CHAT_ID, text })
+    body: JSON.stringify({ 
+        chat_id: TG_CHAT_ID, 
+        text: text + "\n\n(Дубликат отправлен гостем в ЛС)" 
+    })
   })
-  .then(r => r.json())
-  .then(d => { if (d.ok) showSuccess(); else alert('Ошибка отправки'); })
-  .catch(() => showSuccess());
+  .then(response => {
+    // 2. Открываем чат с твоим аккаунтом (jasurbek27) с подставленным текстом
+    const encodedText = encodeURIComponent(text);
+    const directLink = `https://t.me/${TG_USERNAME}?text=${encodedText}`;
+    
+    window.open(directLink, '_blank');
+
+    // 3. Показываем сообщение об успехе на сайте
+    showSuccess();
+    clearForm();
+  })
+  .catch(error => {
+    // Резервный вариант: если fetch не сработал, просто открываем личку
+    window.open(`https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`, '_blank');
+    showSuccess();
+  });
 }
+
+/* ═══════════ ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ═══════════ */
+
 function showSuccess() {
-  document.getElementById('msg-input').value = '';
-  document.getElementById('gift-check').checked = false;
-  const el = document.getElementById('success-msg');
-  el.classList.add('visible');
-  setTimeout(() => el.classList.remove('visible'), 4000);
+  const successEl = document.getElementById('success-msg');
+  if(successEl) {
+    successEl.classList.add('visible'); // Должен быть стиль .visible { display: block или opacity: 1 }
+    setTimeout(() => {
+      successEl.classList.remove('visible');
+    }, 5000);
+  }
 }
+
+function clearForm() {
+  // Очищаем форму после отправки
+  const nameInput = document.getElementById('name-input');
+  const msgInput = document.getElementById('msg-input');
+  const confirmCheck = document.getElementById('confirm-check');
+  const giftCheck = document.getElementById('gift-check');
+
+  if(nameInput) nameInput.value = '';
+  if(msgInput) msgInput.value = '';
+  if(confirmCheck) confirmCheck.checked = false;
+  if(giftCheck) giftCheck.checked = false;
+}
+
+/* ── КАЛЕНДАРЬ И АНИМАЦИИ ПРИ СКРОЛЛЕ ── */
+const calBtn = document.getElementById('cal-btn');
+if(calBtn) {
+  calBtn.addEventListener('click', e => {
+    e.preventDefault();
+    window.open('https://www.google.com/calendar/render?action=TEMPLATE&text=Свадьба+Азизбека+%26+Сарвиноз&dates=20260820T180000/20260820T230000&location=Красноярск', '_blank');
+  });
+}
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
 </body>
 </html>
