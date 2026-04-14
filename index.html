@@ -7,9 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Cormorant+SC:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════
-   ROOT VARS — Soft Wedding Blue Palette
-═══════════════════════════════════════════ */
 :root {
   --sky-lightest: #f0f9ff;
   --sky-lighter: #e0f2fe;
@@ -29,6 +26,7 @@
   --env: #60a5fa;
   --env-d: #3b82f6;
   --env-l: #93c5fd;
+  --env-body: #7ab8f5;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; }
@@ -42,11 +40,10 @@ body {
   margin: 0 auto;
   overflow-x: hidden;
 }
+
 /* ═══════════════════════════════════════════
    INTRO — ENVELOPE SCREEN
 ═══════════════════════════════════════════ */
-/* ── ИСПРАВЛЕННЫЙ ИНТРО (БЕЗ БЕЛОГО ОКНА) ── */
-/* ── FULLSCREEN ADAPTIVE INTRO ── */
 #intro {
   position: fixed;
   inset: 0;
@@ -58,6 +55,19 @@ body {
   overflow: hidden;
 }
 
+.card-wrapper {
+  width: 94%;
+  max-width: 420px;
+  aspect-ratio: 3 / 5;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.2),
+    0 5px 20px rgba(0,0,0,0.1);
+  margin: auto;
+}
+
 .env-stage {
   position: absolute;
   inset: 0;
@@ -66,155 +76,205 @@ body {
   pointer-events: auto;
 }
 
+/* ── Тело конверта (фон-подложка) ── */
+/* ── ОБЩИЙ КОНТЕЙНЕР ── */
 .env-body {
   position: relative;
   width: 100%;
   height: 100%;
-  background: transparent !important;
+  background: transparent;
+  overflow: hidden;
 }
 
-/* ОБЩИЕ СТИЛИ ШТОРОК */
 .env-triangle {
   position: absolute;
-  width: 100%;
-  height: 50.5vh; /* 0.5 для нахлеста, чтобы не было щели */
-  background-color: var(--env-d);
-  z-index: 5;
-  transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ВЕРХНИЙ ТРЕУГОЛЬНИК */
-
-
-/* ── ОБНОВЛЕННЫЙ ВЕРХНИЙ ТРЕУГОЛЬНИК С ТЕКСТОМ ── */
-.env-triangle.top {
-  /* Мы меняем border-top на background, чтобы внутри можно было разместить текст */
-  width: 100vw;
-  height: 51vh;
-  background-color: var(--env-d); /* Используем ваш темный синий */
-  top: 0;
-  left: 0;
-  /* Создаем форму треугольника с помощью clip-path */
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  
-  /* Центрируем текст внутри */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  /* Плавность перехода */
+  inset: 0;
   transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), 
               opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ТЕКСТ НА ВЕРХНЕМ ТРЕУГОЛЬНИКЕ */
+/* 1. НИЖНИЙ (самый нижний слой) */
+/* ── ТЕКСТ НА НИЖНЕМ КЛАПАНЕ ── */
+.env-triangle.bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* Текст будет ближе к центру, где печать */
+  padding-bottom: 15vh; /* Отступ от нижнего края экрана */
+background: var(--env);
+clip-path: polygon(100% 100%, 0 100%, 50% 48%);
+}
+
+.card-hint {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8); /* Белый с легкой прозрачностью */
+  z-index: 6;
+  transition: opacity 0.5s ease;
+}
+
+.hint-text {
+  font-family: 'Cormorant SC', serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.hint-arrow {
+  font-size: 20px;
+  animation: bounce 2s infinite; /* Плавное подпрыгивание стрелочки */
+}
+
+/* Анимация стрелочки */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+  40% {transform: translateY(-5px);}
+  60% {transform: translateY(-3px);}
+}
+
+/* Скрываем подсказку при открытии */
+.env-stage.open .card-hint {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 2. БОКОВЫЕ (поверх нижнего) */
+.env-triangle.left {
+  clip-path: polygon(0 0, 50% 50%, 0 100%);
+  background: var(--env-l);
+  z-index: 3;
+}
+
+.env-triangle.right {
+  clip-path: polygon(100% 0, 100% 100%, 50% 50%);
+  background: var(--env-l);
+  z-index: 3;
+}
+
+/* 3. ВЕРХНИЙ (накрывает всё собой) */
+.env-triangle.top {
+  /* 52% вместо 50%, чтобы был легкий нахлест и не было щели */
+  clip-path: polygon(0 0, 100% 0, 50% 52%);
+  background: var(--env-d);
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Линия сгиба на стыке клапанов ── */
+.env-fold-line {
+  position: absolute;
+  top: 52%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent 15%,
+    rgba(0,0,0,0.12) 50%,
+    transparent 85%
+  );
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* ── Текст на верхнем клапане ── */
 .card-inscription {
   position: absolute;
-  top: 15%; /* Позиция на мобильном */
+  top: 16%;
+  left: 0;
+  right: 0;
   text-align: center;
   color: white;
-  width: 100%;
-  padding: 0 20px;
+  padding: 0 24px;
+  z-index: 7;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
 }
 
 .ins-title {
   font-family: 'Cormorant SC', serif;
-  font-size: 5vw; /* Адаптивный размер от ширины экрана */
+  font-size: 0.8vw;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .ins-amp {
   font-family: 'Great Vibes', cursive;
-  font-size: 12vw;
+  font-size: 0.8vw;
   color: var(--gold-l);
-  margin: 5px 0;
+  margin: 4px 0;
 }
 
 .ins-sub {
   font-family: 'Cormorant SC', serif;
-  font-size: 3vw;
+  font-size: 0.8vw;
   letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
-/* НИЖНИЙ ТРЕУГОЛЬНИК */
-.env-triangle.bottom {
-  bottom: 0;
-  height: 50.5vh;
-  clip-path: polygon(50% 0, 0 100%, 100% 100%);
-  background-color: var(--env);
-}
-
-/* БОКОВЫЕ (Сделаем их чуть шире для объема) */
-.env-triangle.left, .env-triangle.right {
-  height: 100vh;
-  width: 100%;
-  background-color: var(--env-l);
-  z-index: 4; /* Под верхним и нижним */
-}
-
-.env-triangle.left {
-  left: 0;
-  clip-path: polygon(0 0, 50% 50%, 0 100%);
-}
-
-.env-triangle.right {
-  right: 0;
-  clip-path: polygon(100% 0, 100% 100%, 50% 50%);
-}
-
-/* Убираем текст из интро, он не нужен, если мы хотим сразу видеть фото */
-.card-content {
-  display: none !important;
-}
-
-/* Анимация при нажатии */
-/* АНИМАЦИЯ ИСЧЕЗНОВЕНИЯ ТЕКСТА */
-.env-stage.open .card-inscription {
-  opacity: 0; /* Текст исчезает чуть быстрее самого треугольника */
-}
-
-/* Оставляем анимацию уезда верхнего треугольника */
-.env-stage.open .env-triangle.top {
-  transform: translateY(-100%);
-  opacity: 0;
-}
-/* АНИМАЦИЯ ОТКРЫТИЯ */
-.env-stage.open .env-triangle.bottom { transform: translateY(100%); opacity: 0; }
-.env-stage.open .env-triangle.left { opacity: 0; transform: scale(1.05); }
-.env-stage.open .env-triangle.right { opacity: 0; transform: scale(1.05); }
-
-/* ПЕЧАТЬ */
+/* ── Печать — на кончике верхнего треугольника ── */
 .wax-seal {
   position: absolute;
-  top: 50%;
+  top: 52%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  width: 80px;
-  height: 80px;
+  width: 76px;
+  height: 76px;
   background: radial-gradient(circle at 35% 32%, var(--gold-l), var(--gold));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 10px;
+  font-size: 9px;
+  font-family: 'Cormorant SC', serif;
   letter-spacing: 1px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.3),
+    inset 0 -2px 4px rgba(0,0,0,0.15);
   cursor: pointer;
-  transition: all 0.6s ease;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wax-seal:active {
+  transform: translate(-50%, -50%) scale(0.92);
+}
+
+/* ── Анимация открытия ── */
+.env-stage.open .card-inscription {
+  opacity: 0;
+}
+
+.env-stage.open .env-triangle.top {
+  transform: translateY(-105%);
+  opacity: 0;
+}
+
+.env-stage.open .env-triangle.bottom {
+  transform: translateY(105%);
+  opacity: 0;
+}
+
+.env-stage.open .env-triangle.left{
+  opacity: 0;
+  transform: translateX(-105%);
+}
+.env-stage.open .env-triangle.right{
+  opacity: 0;
+  transform: translateX(105%);
+}
+
+.env-stage.open .env-fold-line {
+  opacity: 0;
 }
 
 .env-stage.open .wax-seal {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0);
 }
+
 /* ═══════════════════════════════════════════
    TOP BAR
 ═══════════════════════════════════════════ */
@@ -255,6 +315,7 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
 }
+
 /* ═══════════════════════════════════════════
    HERO SECTION
 ═══════════════════════════════════════════ */
@@ -337,6 +398,7 @@ body {
   opacity: 0;
   animation: fadeDown 1s 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
 /* ═══════════════════════════════════════════
    COUNTDOWN
 ═══════════════════════════════════════════ */
@@ -374,6 +436,7 @@ body {
   display: block;
 }
 .cd-sep { font-size: 24px; color: var(--white); opacity: 0.7; padding-top: 6px; }
+
 /* ═══════════════════════════════════════════
    SECTIONS
 ═══════════════════════════════════════════ */
@@ -386,7 +449,6 @@ section {
 section:nth-child(even) {
   background: linear-gradient(180deg, var(--sky-lighter) 0%, var(--sky-lightest) 100%);
 }
-/* Highlighted sections */
 section.highlight {
   background: linear-gradient(160deg, var(--sky-light) 0%, var(--sky-soft) 50%, var(--sky-light) 100%);
   box-shadow: inset 0 0 60px rgba(255,255,255,0.5);
@@ -399,7 +461,6 @@ section.highlight {
   text-align: center;
   margin-bottom: 22px;
 }
-/* ── GREETING ── */
 .greet-heading {
   font-family: 'Cormorant Garamond', serif;
   font-size: 34px;
@@ -423,7 +484,6 @@ section.highlight {
   margin-top: 18px;
   letter-spacing: 2px;
 }
-/* ── PHOTO PLACEHOLDER ── */
 .photo-rect {
   width: 100%;
   aspect-ratio: 3/4;
@@ -464,7 +524,6 @@ section.highlight {
   margin: 10px 0 24px;
   line-height: 1.4;
 }
-/* ── COUPLE ── */
 .couple-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -478,7 +537,6 @@ section.highlight {
   color: var(--gold-d);
   margin-top: 8px;
 }
-/* ── INFO CARD ── */
 .info-card {
   background: rgba(255,255,255,0.7);
   border: 1px solid rgba(186, 230, 253, 0.6);
@@ -503,7 +561,6 @@ section.highlight {
   margin-bottom: 12px;
 }
 .info-card p { font-size:15px; color:var(--text-medium); line-height:1.75; }
-/* ── FORM ── */
 .form-wrap { margin-top: 8px; }
 .form-label {
   font-size: 13px;
@@ -527,8 +584,8 @@ textarea {
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 textarea::placeholder { color: rgba(71, 85, 105, 0.4); }
-textarea:focus { 
-  border-color: var(--sky-bright); 
+textarea:focus {
+  border-color: var(--sky-bright);
   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
 }
 .checkbox-row {
@@ -563,9 +620,9 @@ textarea:focus {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .btn-main:active { transform: scale(0.98); }
-.btn-main:hover { 
+.btn-main:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(14, 165, 233, 0.5); 
+  box-shadow: 0 6px 28px rgba(14, 165, 233, 0.5);
 }
 .btn-confirm {
   background: linear-gradient(135deg, var(--gold-d), var(--gold));
@@ -587,9 +644,9 @@ textarea:focus {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .btn-confirm:active { transform: scale(0.98); }
-.btn-confirm:hover { 
+.btn-confirm:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(212,168,75,0.5); 
+  box-shadow: 0 6px 28px rgba(212,168,75,0.5);
 }
 .success-msg {
   display: none;
@@ -603,6 +660,7 @@ textarea:focus {
   border: 1px solid rgba(186, 230, 253, 0.6);
 }
 .success-msg.visible { display: block; }
+
 /* ═══════════════════════════════════════════
    SCHEDULE
 ═══════════════════════════════════════════ */
@@ -654,6 +712,7 @@ textarea:focus {
 .sched-event-title { font-size: 17px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; }
 .sched-place { font-size: 12px; color: var(--sky-deep); letter-spacing: 0.5px; margin-bottom: 5px; }
 .sched-desc { font-size: 14px; color: var(--text-medium); line-height: 1.6; }
+
 /* ═══════════════════════════════════════════
    FOOTER
 ═══════════════════════════════════════════ */
@@ -674,15 +733,12 @@ textarea:focus {
   letter-spacing: 2px;
   color: var(--text-medium);
 }
+
 /* ═══════════════════════════════════════════
    ANIMATIONS
 ═══════════════════════════════════════════ */
 @keyframes fadeDown {
   from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .reveal {
@@ -692,46 +748,53 @@ textarea:focus {
   will-change: transform, opacity;
 }
 .reveal.visible { opacity: 1; transform: none; }
-/* hide main during intro */
 #main-content { opacity: 0; transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1); }
 #main-content.visible { opacity: 1; }
 </style>
 </head>
 <body>
+
 <!-- ══════════════════════════════════════
      INTRO ENVELOPE
 ══════════════════════════════════════ -->
 <div id="intro">
-  <div class="env-stage" id="envStage">
-    <div class="env-body">
-      <div class="env-triangle left"></div>
-      <div class="env-triangle right"></div>
-      <div class="env-triangle bottom"></div>
-      
-      <div class="env-triangle top">
-        <div class="card-inscription">
-          <div class="ins-title">Приглашение</div>
-          <div class="ins-amp">и</div>
-          <div class="ins-sub">Свадебное торжество</div>
-        </div>
-      </div>
-
-      <div class="wax-seal" id="waxSeal" onclick="openEnvelope()">
-        <span>ОТКРЫТЬ</span>
-      </div>
+  <div class="card-wrapper">
+    <div class="env-stage" id="envStage">
+<div class="env-body">
+  <div class="env-triangle bottom"></div>
+  <div class="env-triangle left"></div>
+  <div class="env-triangle right"></div>
+  <div class="env-triangle top">
+    <div class="card-inscription">
+      <div class="ins-title">Приглашение</div>
+      <div class="ins-amp">&amp;</div>
+      <div class="ins-sub">Свадебное торжество</div>
+    </div>
+  </div>
+  
+  <div class="wax-seal" onclick="openEnvelope()">
+    <span>ОТКРЫТЬ</span>
+  </div>
+  <div class="env-triangle bottom">
+  <div class="card-hint">
+    <div class="hint-text">Листайте вниз</div>
+    <div class="hint-arrow">↓</div>
+  </div>
+</div>
+</div>
     </div>
   </div>
 </div>
+
 <!-- ══════════════════════════════════════
      MAIN CONTENT
 ══════════════════════════════════════ -->
 <div id="main-content">
-  <!-- TOP BAR -->
   <div class="topbar">
     <span class="topbar-title">Приглашение</span>
     <a class="topbar-btn" id="cal-btn" href="#">📅 В календарь</a>
   </div>
-  <!-- HERO -->
+
   <div class="hero">
     <div class="hero-date">20 · 08 · 2026</div>
     <div class="hero-name bride">АЗИЗБЕК</div>
@@ -741,7 +804,7 @@ textarea:focus {
     <div class="hero-venue">20 августа 2026 · Ресторан «Корона» · Красноярск</div>
     <div class="hero-quote">Ждём всех на нашей свадьбе!</div>
   </div>
-  <!-- COUNTDOWN -->
+
   <div class="countdown-wrap">
     <hr class="cd-divider">
     <div class="countdown">
@@ -771,7 +834,7 @@ textarea:focus {
       </div>
     </div>
   </div>
-  <!-- GREETING -->
+
   <section class="reveal">
     <div class="section-label">ДОРОГОЙ ГОСТЬ</div>
     <div class="greet-heading">Добро<br>пожаловать!</div>
@@ -779,34 +842,30 @@ textarea:focus {
       Мы рады сообщить Вам, что 20.08.2026 состоится самое главное торжество в нашей жизни — день нашей свадьбы! Приглашаем Вас разделить с нами радость этого незабываемого дня.
     </p>
     <div class="greet-dt">20.08.2026 &nbsp;·&nbsp; 18:00</div>
-    <!-- COUPLE PHOTO — замените src -->
     <div class="photo-rect">
       <span class="ph">📷 Фото пары</span>
-      <!-- <img src="couple.jpg" alt=""> -->
     </div>
     <div class="cursive-line">Там, где поселили любовь,<br>расцветёт радость!</div>
   </section>
-  <!-- COUPLE -->
+
   <section class="reveal">
     <div class="section-label">ЖЕНИХ И НЕВЕСТА</div>
     <div class="couple-grid">
       <div class="person-block">
         <div class="photo-circle">
           <span class="ph">Жених</span>
-          <!-- <img src="groom.jpg" alt=""> -->
         </div>
         <div class="person-role">Жених</div>
       </div>
       <div class="person-block">
         <div class="photo-circle">
           <span class="ph">Невеста</span>
-          <!-- <img src="bride.jpg" alt=""> -->
         </div>
         <div class="person-role">Невеста</div>
       </div>
     </div>
   </section>
-  <!-- GIFTS & NOTES -->
+
   <section class="reveal highlight">
     <div class="info-card">
       <div class="info-card-title">ПОЖЕЛАНИЯ ПО ПОДАРКАМ</div>
@@ -821,7 +880,7 @@ textarea:focus {
       <p>Опубликуйте фото дня нашей свадьбы в соц. сетях с хештегом <strong style="color:var(--gold-d)">#20.08</strong> ❤️</p>
     </div>
   </section>
-  <!-- CONFIRMATION -->
+
   <section class="reveal highlight">
     <div class="section-label">ПОДТВЕРЖДЕНИЕ</div>
     <p style="text-align:center; color:var(--text-medium); font-size:15px; margin-bottom:28px;">
@@ -846,7 +905,7 @@ textarea:focus {
       </div>
     </div>
   </section>
-  <!-- SCHEDULE -->
+
   <section class="reveal">
     <div class="schedule-title">Свадебное расписание</div>
     <div class="sched-item">
@@ -854,7 +913,7 @@ textarea:focus {
       <div>
         <div class="sched-event-title">Торжественная регистрация</div>
         <div class="sched-place">Английская набережная, 28</div>
-        <div class="sched-desc">Наша регистрация пройдёт в залах ЗАГСа Адмиралтейского района, приглашаем всех разделить этот торжественный момент</div>
+        <div class="sched-desc">Наша регистрация пройдёт в залах ЗАГСа Адмиралтейского района</div>
       </div>
     </div>
     <div class="sched-item">
@@ -862,7 +921,7 @@ textarea:focus {
       <div>
         <div class="sched-event-title">Фуршет</div>
         <div class="sched-place">Ресторан</div>
-        <div class="sched-desc">Время пролетит незаметно за фуршетом и общением с другими гостями</div>
+        <div class="sched-desc">Время пролетит незаметно за фуршетом и общением</div>
       </div>
     </div>
     <div class="sched-item">
@@ -870,7 +929,7 @@ textarea:focus {
       <div>
         <div class="sched-event-title">Фотосессия</div>
         <div class="sched-place">Фотостудия</div>
-        <div class="sched-desc">До банкета у вас будет время узнать друг друга поближе и пофотографироваться</div>
+        <div class="sched-desc">Время узнать друг друга поближе и пофотографироваться</div>
       </div>
     </div>
     <div class="sched-item">
@@ -890,27 +949,22 @@ textarea:focus {
       </div>
     </div>
   </section>
-  <!-- FOOTER -->
+
   <div class="footer">
     <div class="footer-names">Азизбек &amp; Сарвиноз</div>
     <div class="footer-sub">20 · 08 · 2026 &nbsp;·&nbsp; КРАСНОЯРСК</div>
     <div class="footer-sub" style="margin-top:10px;">Wedding Post · Сервис свадебных приглашений</div>
   </div>
-</div><!-- /main-content -->
+</div>
+
 <script>
-/* ═══════════ TELEGRAM CONFIG ═══════════
-   Замените на ваши данные:
-   - TG_BOT_TOKEN: токен бота от @BotFather
-   - TG_CHAT_ID: ваш chat_id от @userinfobot
-   - TG_USERNAME: ваш Telegram username (fallback)
-*/
-const TG_BOT_TOKEN = 'ВСТАВЬТЕ_ТОКЕН_БОТА';
-const TG_CHAT_ID = 'ВСТАВЬТЕ_CHAT_ID';
-const TG_USERNAME = 'ВАШ_USERNAME'; // без @
-/* ═══════════ ENVELOPE OPENING ═══════════ */
+const TG_BOT_TOKEN = '8456086614:AAEORuZmFI5jxCMe1VKNtnHFkc1Horzj--c';
+const TG_CHAT_ID = '5758126711';
+const TG_USERNAME = 'jasurbek27';
+
 let envelopeOpened = false;
 
-
+// Основная функция открытия
 function openEnvelope() {
   if (envelopeOpened) return;
   envelopeOpened = true;
@@ -919,26 +973,60 @@ function openEnvelope() {
   const intro = document.getElementById('intro');
   const mainContent = document.getElementById('main-content');
   
-  // 1. Убираем "шторки"
+  // 1. Запускаем анимацию (уезд верхнего/нижнего и исчезновение боковых)
   stage.classList.add('open');
 
-  // 2. Сразу показываем основной контент "под" открыткой
-  setTimeout(() => {
-    mainContent.classList.add('visible');
-    document.body.style.overflow = 'auto';
-  }, 300);
+  // 2. Разрешаем прокрутку страницы
+  document.body.style.overflow = 'auto';
+  document.documentElement.style.overflow = 'auto';
 
-  // 3. Плавно удаляем весь слой интро, чтобы остался только рабочий сайт
+  // 3. Плавно проявляем основной контент
+  if (mainContent) mainContent.classList.add('visible');
+
+  // 4. Полностью удаляем слой интро через некоторое время
   setTimeout(() => {
     intro.style.opacity = '0';
     setTimeout(() => {
-      intro.classList.add('hidden');
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      intro.remove();
     }, 1000);
-  }, 1100);
+  }, 600);
 }
 
-// Scroll trigger on intro
+// ── СЛУШАТЕЛИ СОБЫТИЙ ──
+
+// 1. Клик по печати (уже есть в HTML через onclick)
+
+// 2. Скролл колесиком мыши (Desktop)
+window.addEventListener('wheel', (event) => {
+  if (event.deltaY > 0 && !envelopeOpened) {
+    openEnvelope();
+  }
+}, { passive: true });
+
+// 3. Свайп на мобильных устройствах
+let touchStartY = 0;
+
+window.addEventListener('touchstart', (e) => {
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+  if (envelopeOpened) return;
+  
+  let touchEndY = e.touches[0].clientY;
+  // Если тянем палец вверх (скроллим вниз) более чем на 30 пикселей
+  if (touchStartY - touchEndY > 30) {
+    openEnvelope();
+  }
+}, { passive: true });
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+  // Блокируем скролл изначально
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+});
+
 let scrollTriggered = false;
 window.addEventListener('scroll', () => {
   if (!scrollTriggered && window.scrollY > 30) {
@@ -946,15 +1034,15 @@ window.addEventListener('scroll', () => {
     openEnvelope();
   }
 }, { passive: true });
-// Lock scroll during intro
+
 document.body.style.overflow = 'hidden';
-/* ═══════════ COUNTDOWN ═══════════ */
+
 const weddingDate = new Date('2026-08-20T18:00:00');
 function updateCD() {
   const diff = weddingDate - new Date();
   if (diff <= 0) return;
   const s = Math.floor(diff / 1000);
-  const pad = n => String(n).padStart(2,'0');
+  const pad = n => String(n).padStart(2, '0');
   document.getElementById('cd-w').textContent = pad(Math.floor(s / (7*86400)));
   document.getElementById('cd-d').textContent = pad(Math.floor((s % (7*86400)) / 86400));
   document.getElementById('cd-h').textContent = pad(Math.floor((s % 86400) / 3600));
@@ -963,7 +1051,7 @@ function updateCD() {
 }
 updateCD();
 setInterval(updateCD, 1000);
-/* ═══════════ CALENDAR ═══════════ */
+
 document.getElementById('cal-btn').addEventListener('click', e => {
   e.preventDefault();
   window.open(
@@ -973,32 +1061,32 @@ document.getElementById('cal-btn').addEventListener('click', e => {
     '&location=Ресторан+Корона,+Красноярск', '_blank'
   );
 });
-/* ═══════════ SCROLL REVEAL ═══════════ */
+
 const obs = new IntersectionObserver(
   entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
   { threshold: 0.1 }
 );
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-/* ═══════════ TELEGRAM ═══════════ */
+
 function confirmAttendance() {
   const gift = document.getElementById('gift-check').checked;
-  sendTelegram(`✅ Гость подтвердил присутствие на свадьбе!${gift ? '\n🎁 Хочет сделать денежный подарок' : ''}`);
+  sendTelegram('✅ Гость подтвердил присутствие на свадьбе!' + (gift ? '\n🎁 Денежный подарок' : ''));
 }
 function sendToTelegram() {
   const msg = document.getElementById('msg-input').value.trim();
   const gift = document.getElementById('gift-check').checked;
   const text = msg
-    ? `💌 Сообщение от гостя:\n\n${msg}${gift ? '\n\n🎁 Денежный подарок' : ''}`
-    : `✅ Гость подтвердил присутствие${gift ? '\n🎁 Денежный подарок' : ''}`;
+    ? '💌 Сообщение от гостя:\n\n' + msg + (gift ? '\n\n🎁 Денежный подарок' : '')
+    : '✅ Гость подтвердил присутствие' + (gift ? '\n🎁 Денежный подарок' : '');
   sendTelegram(text);
 }
 function sendTelegram(text) {
-  if (TG_BOT_TOKEN === 'ВСТАВЬТЕ_ТОКЕН_БОТА') {
-    window.open(`https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`, '_blank');
+  if (TG_BOT_TOKEN === '8456086614:AAEORuZmFI5jxCMe1VKNtnHFkc1Horzj--c') {
+    window.open('https://t.me/' + TG_USERNAME + '?text=' + encodeURIComponent(text), '_blank');
     showSuccess();
     return;
   }
-  fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+  fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/sendMessage', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ chat_id: TG_CHAT_ID, text })
