@@ -14,9 +14,9 @@ jobs:
       - name: Inject Secrets
         run: |
           # Заменяем метки в файле на секреты из GitHub
-          sed -i "s/PROCESS_TG_BOT_TOKEN/${{ secrets.TG_BOT_TOKEN }}/g" js/config.js
-          sed -i "s/PROCESS_TG_CHAT_ID/${{ secrets.TG_CHAT_ID }}/g" js/config.js
-          sed -i "s/PROCESS_TG_USERNAME/${{ secrets.TG_USERNAME }}/g" js/config.js
+          sed -i "s/PROCESS_TG_BOT_TOKEN/${{ secrets.TG_BOT_TOKEN }}/g" index.html
+          sed -i "s/PROCESS_TG_CHAT_ID/${{ secrets.TG_CHAT_ID }}/g" index.html
+          sed -i "s/PROCESS_TG_USERNAME/${{ secrets.TG_USERNAME }}/g" index.html
         # Укажите правильный путь к вашему файлу (например, js/config.js)
 
       - name: Deploy to GitHub Pages
