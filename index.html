@@ -1229,30 +1229,40 @@ function sendToTelegram() {
     const gift = document.getElementById('gift-check').checked;
     const msg = document.getElementById('msg-input').value.trim();
 
-    // Глубокая валидация
     if (!isConfirmed) {
         notify("Пожалуйста, подтвердите присутствие ✅", "error");
         return;
     }
-
     if (guestName.length < 2) {
         notify("Пожалуйста, введите ваше имя ✍️", "error");
         return;
     }
 
-    let text = `👰🤵 НОВОЕ ПОДТВЕРЖДЕНИЕ\n\n`;
-    text += `👤 Имя: ${guestName}\n`;
-    text += `✅ Статус: Придет на свадьбу\n`;
-    text += `🎁 Подарок: ${gift ? 'Денежный 💵' : 'Пока не указано'}\n`;
-    if (msg) text += `💌 Сообщение: ${msg}`;
+    // 📨 Текст для бота (технический)
+    let botText = `👰🤵 НОВОЕ ПОДТВЕРЖДЕНИЕ\n\n`;
+    botText += `👤 Имя: ${guestName}\n`;
+    botText += `✅ Статус: Придет на свадьбу\n`;
+    botText += `🎁 Подарок: ${gift ? 'Денежный 💵' : 'Пока не указано'}\n`;
+    if (msg) botText += `💌 Сообщение: ${msg}`;
 
-    sendTelegram(text);
+    // 💌 Текст для жениха (красивый, от имени гостя)
+    let userText = `Уважаемые Азизбек и Сарвиноз! 🌸\n\n`;
+    userText += `Меня зовут ${guestName}.\n`;
+    userText += `Спасибо большое за приглашение — это очень приятно!\n\n`;
+    userText += `С радостью подтверждаю своё присутствие на вашем торжестве. `;
+    userText += `Желаю вам безграничного счастья, любви и здоровья! 💍\n\n`;
+    if (gift) {
+        userText += `В качестве подарка планирую денежный подарок 💵\n\n`;
+    }
+    if (msg) {
+        userText += `Хочу добавить: ${msg}\n\n`;
+    }
+    userText += `С уважением, ${guestName} 🙏`;
+
+    sendTelegram(botText, userText);
 }
-
-function sendTelegram(text) {
-    // ✅ Открываем окно СРАЗУ — пока браузер считает это жестом пользователя
+function sendTelegram(botText, userText) {
     const tgWindow = window.open('', '_blank');
-
     notify("Отправляем... ⏳", "loading");
     const btn = document.querySelector('.rsvp-btn');
     if(btn) btn.disabled = true;
@@ -1260,16 +1270,16 @@ function sendTelegram(text) {
     fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: botText }), // в бот идёт технический текст
     })
     .then(async (response) => {
         const data = await response.json();
-
         if (response.ok && data.ok) {
             notify("Данные отправлены! Открываем чат... 🚀", "success");
             setTimeout(() => {
-                const directLink = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`;
-                tgWindow.location.href = directLink; // ← меняем адрес уже открытого окна
+                // в личку жениху идёт красивый текст
+                const directLink = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(userText)}`;
+                tgWindow.location.href = directLink;
                 clearForm();
             }, 1000);
         } else {
@@ -1277,11 +1287,11 @@ function sendTelegram(text) {
         }
     })
     .catch(error => {
-        console.error("Ошибка отправки:", error);
+        console.error("Ошибка:", error);
         notify("Бот временно недоступен. Открываем чат...", "error");
         setTimeout(() => {
-            const directLink = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`;
-            tgWindow.location.href = directLink; // ← то же самое в fallback
+            const directLink = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(userText)}`;
+            tgWindow.location.href = directLink;
         }, 1500);
     })
     .finally(() => {
