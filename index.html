@@ -1107,10 +1107,11 @@ gsap.to("#heart-group", { // Двигаем группу!
 </div>
 
 <script>
-/* ── КОНФИГУРАЦИЯ ── */
-const TG_BOT_TOKEN = '8456086614:AAEORuZmFI5jxCMe1VKNtnHFkc1Horzj--c';
-const TG_CHAT_ID = '5758126711';
-const TG_USERNAME = 'jasurbek27';
+const CONFIG = {
+    TG_BOT_TOKEN: 'PROCESS_TG_BOT_TOKEN',
+    TG_CHAT_ID: 'PROCESS_TG_CHAT_ID',
+    TG_USERNAME: 'PROCESS_TG_USERNAME'
+};
 
 let envelopeOpened = false;
 
