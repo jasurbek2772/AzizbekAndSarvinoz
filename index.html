@@ -325,10 +325,10 @@ clip-path: polygon(100% 100%, 0 100%, 50% 48%);
       position: relative;
       
       /* Изменено для анимации: */
-      min-height: 180vh; /* Увеличили высоту, чтобы было время для скролла анимации */
+      min-height: 100%; /* Увеличили высоту, чтобы было время для скролла анимации */
       background-image: url(2.jpg);
-  background-size: contain;         /* Оригинальный размер */
-  background-position: center top;     /* Центрирование по горизонтали и вертикали */
+  background-size: cover;         /* Оригинальный размер */
+  background-position: center;     /* Центрирование по горизонтали и вертикали */
   background-repeat: no-repeat;
     }
 
@@ -345,20 +345,24 @@ clip-path: polygon(100% 100%, 0 100%, 50% 48%);
     }
 
     /* Точечный узор (оставляем) */
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 1;
-    }
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Новое чистое сердечко без лишних волн
+background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path transform="scale(0.2) translate(50, 50)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="%23ff0044" opacity="0.4"/></svg>');  */ 
+     background-image: radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 0.5px);
+/* Размер сердечек */
+  background-size: 30px 30px; 
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: 1;
+}
 
     /* --- СТИЛИ ДЛЯ ИНТЕГРАЦИИ SVG-АНИМАЦИИ --- */
     .svg-wrapper {
       position: absolute;
-      top: 0;
+      top: 60px;
       left: 0;
       width: 100%;
       height: 100%;
@@ -367,11 +371,12 @@ clip-path: polygon(100% 100%, 0 100%, 50% 48%);
     }
 
     .svg-container {
-      width: 60%;
+
+      width: 80%;
       max-width: 600px;
       margin: 0 auto;
       position: sticky; /* Ключевой момент */
-      top: 10vh; /* Где SVG застынет при скролле (подстройте под руки) */
+      top: 15vh; /* Где SVG застынет при скролле (подстройте под руки) */
       opacity: 0.8; /* Чуть прозрачный, чтобы руки просвечивали */
     }
 
@@ -380,11 +385,48 @@ clip-path: polygon(100% 100%, 0 100%, 50% 48%);
       stroke: rgba(0, 0, 0, 0.05); /* Очень бледная линия */
       stroke-width: 3;
     }
-
-  #heart {
+/* Обновленный CSS для `#heart` */
+#heart {
   fill: #ff0044; /* Насыщенный красный */
-  /* Красное свечение */
+  /* Красное свечение (оставляем твое) */
   filter: drop-shadow(0 0 5px #ff0044) drop-shadow(0 0 15px #ff4477);
+  
+  /* --- НОВАЯ АНИМАЦИЯ БИЕНИЯ --- */
+  
+  /* 1. Центр трансформации должен быть посередине самого сердца */
+  transform-origin: center center;
+  transform-box: fill-box; /* Важно для SVG-путей! */
+  
+  /* 2. Подключаем анимацию (название, длительность, тип, бесконечно) */
+  animation: heartBeat 1.2s ease-in-out infinite; 
+}
+
+/* 3. Описываем саму анимацию (Ключевые кадры) */
+@keyframes heartBeat {
+  0% {
+    /* Исходный размер */
+    transform: scale(1.0); 
+  }
+  25% {
+    /* Первый удар: чуть больше */
+    transform: scale(1.15); 
+    /* Можно добавить усиление свечения при ударе: */
+    filter: drop-shadow(0 0 10px #ff0044) drop-shadow(0 0 25px #ff4477);
+  }
+  40% {
+    /* Сжатие после первого удара */
+    transform: scale(1.0); 
+    /* Возвращаем стандартное свечение */
+    filter: drop-shadow(0 0 5px #ff0044) drop-shadow(0 0 15px #ff4477);
+  }
+  55% {
+    /* Второй (более слабый) удар */
+    transform: scale(1.08); 
+  }
+  100% {
+    /* Пауза до следующего цикла */
+    transform: scale(1.0); 
+  }
 }
     /* ------------------------------------------ */
 
@@ -393,15 +435,24 @@ clip-path: polygon(100% 100%, 0 100%, 50% 48%);
     .hero-content-wrapper {
         position: relative;
         z-index: 5; /* Под SVG */
+        background: none;
     }
 
     .hero-date {
       font-size: 16px;
       letter-spacing: 5px;
       color: var(--gold-d);
-      margin-bottom: 28px;
+      margin-bottom: 55px;
+      margin-top: 40px;
     }
-
+/*.white_circle{
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+ 
+    box-shadow: 0 0 50px 50px rgba(255,255,255,0.7); 
+    
+   
+    padding: 20px;
+    border-radius: 50%; /* Если контент примерно квадратный, это создаст мягкий круг без сердечек }*/
     .hero-name {
       /* font-family: 'PopularScript', serif; // В вашем примере, убедитесь, что подключен */
       font-weight: 300;
@@ -410,13 +461,14 @@ clip-path: polygon(100% 100%, 0 100%, 50% 48%);
       line-height: 1;
       color: var(--text-dark);
     }
-
+ 
     .hero-amp {
       font-family: 'Great Vibes', cursive;
       font-size: 56px;
       color: var(--gold-d);
       display: block;
       margin: 15px 0; /* Подстроили под руки */
+      
     }
 
     .hero-tagline {
@@ -432,13 +484,14 @@ clip-path: polygon(100% 100%, 0 100%, 50% 48%);
       font-size: 15px;
       color: var(--sky-deep);
       letter-spacing: 0.5px;
+      margin-bottom: 10px;
     }
 
     .hero-quote {
       font-family: 'Great Vibes', cursive;
       font-size: 32px;
       color: var(--text-dark);
-      margin-top: 28px;
+      margin-top: 35px;
     }
 
 /* ═══════════════════════════════════════════
@@ -843,23 +896,24 @@ textarea:focus {
       <div class="svg-container">
         <svg viewBox="0 0 200 350" xmlns="http://www.w3.org/2000/svg">
             <path id="path-s" d="M150,50 C150,50 50,20 50,110 C50,200 150,150 150,240 C150,330 50,300 50,300" stroke-linecap="round"/>
-            
+            <g id="heart-group">
             <path id="heart" 
       d="M10,30 A5,5 0,0,1 20,30 A5,5 0,0,1 30,30 Q30,40 20,50 Q10,40 10,30 Z" 
       fill="#ff0044" 
-      transform="scale(1.0) translate(-10, -18)" />
+      transform="scale(1.0) translate(-10, -18)" /></g>
         </svg>
       </div>
     </div>
     
     <div class="hero-content-wrapper">
         <div class="hero-date">20 · 08 · 2026</div>
+        <div class="white_circle">
         <div class="hero-name bride">Azizbek</div>
         <span class="hero-amp">and</span>
         <div class="hero-name groom">Sarvinoz</div>
-        
+        </div>
         <div class="hero-tagline">Приглашаем разделить радость нашей свадьбы</div>
-        <div class="hero-venue">20 августа 2026 · Ресторан «Корона» · Красноярск</div>
+        <div class="hero-venue">19 августа 2026 · Ресторан «Корона» · Красноярск <br>20 августа 2026 · Ресторан «Корона» · Красноярск</div>
         
         <div class="hero-quote">Ждём всех на нашей свадьбе!</div>
     </div>
@@ -875,17 +929,17 @@ textarea:focus {
 
     // 2. Анимация точки по траектории
     // Анимация сердечка по траектории
-gsap.to("#heart", {
+gsap.to("#heart-group", { // Двигаем группу!
   scrollTrigger: {
     trigger: ".hero",
     start: "top top",
     end: "bottom bottom",
-    scrub: 1.5,
+    scrub: 5,
   },
   motionPath: {
     path: "#path-s",
     align: "#path-s",
-    alignOrigin: [0.5, 0.5] // Чтобы сердце летело ровно центром по линии
+    alignOrigin: [0.5, 0.5]
   },
   ease: "none"
 });
@@ -929,7 +983,7 @@ gsap.to("#heart", {
     </p>
     <div class="greet-dt">20.08.2026 &nbsp;·&nbsp; 18:00</div>
     <div class="photo-rect">
-      <span class="ph">📷 Фото пары</span>
+      <span class="ph"><img src="3.jpg" alt=""></span>
     </div>
     <div class="cursive-line">Там, где поселили любовь,<br>расцветёт радость!</div>
   </section>
@@ -1046,7 +1100,7 @@ gsap.to("#heart", {
   </section>
 
   <div class="footer">
-    <div class="footer-names">Азизбек &amp; Сарвиноз</div>
+    <div class="footer-names">Azizbek and Sarvinoz</div>
     <div class="footer-sub">20 · 08 · 2026 &nbsp;·&nbsp; КРАСНОЯРСК</div>
     <div class="footer-sub" style="margin-top:10px;">ТГ: <a href="https://t.me/weddingqr">@weddingqr</a>  · Сервис свадебных приглашений</div>
   </div>
