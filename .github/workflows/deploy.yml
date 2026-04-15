@@ -1,0 +1,38 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Inject Secrets
+        # Передаем секреты из настроек репозитория в переменные окружения шага
+        env:
+          BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          USERNAME: ${{ secrets.TG_USERNAME }}
+        run: |
+          # 1. Проверка: если секрет пустой, скрипт остановится с ошибкой (чтобы ты сразу узнал)
+          if [ -z "$BOT_TOKEN" ]; then echo "ERROR: TG_BOT_TOKEN is empty"; exit 1; fi
+          
+          # 2. Замена. Используем двойные кавычки для переменных и | как разделитель
+          # Мы ищем именно строку PROCESS_TG_... и меняем её на значение переменной
+          sed -i "s|PROCESS_TG_BOT_TOKEN|$BOT_TOKEN|g" index.html
+          sed -i "s|PROCESS_TG_CHAT_ID|$CHAT_ID|g" index.html
+          sed -i "s|PROCESS_TG_USERNAME|$USERNAME|g" index.html
+          
+          # 3. Финальная проверка логов (секреты скроются звёздочками *** автоматически)
+          echo "Проверка подстановки в index.html:"
+          grep "const TG_" index.html
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
+          branch: gh-pages
