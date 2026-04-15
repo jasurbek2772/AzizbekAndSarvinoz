@@ -1106,6 +1106,28 @@ gsap.to("#heart-group", { // Двигаем группу!
   </div>
 </div>
 
+<div id="status-notification" class="status-notification"></div>
+
+<style>
+.status-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 15px 25px;
+    border-radius: 10px;
+    color: white;
+    font-family: sans-serif;
+    z-index: 1000;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.status-notification.visible { transform: translateX(-50%) translateY(0); }
+.status-notification.error { background: #ff4d4d; }
+.status-notification.success { background: #4BB543; }
+.status-notification.loading { background: #b59410; }
+</style>
+  
 <script>
 const TG_BOT_TOKEN = 'PROCESS_TG_BOT_TOKEN';
 const TG_CHAT_ID = 'PROCESS_TG_CHAT_ID';
@@ -1191,64 +1213,90 @@ setInterval(updateCD, 1000);
 
 /* ═══════════ TELEGRAM LOGIC ═══════════ */
 
+/* ── УЛУЧШЕННАЯ ЛОГИКА УВЕДОМЛЕНИЙ ── */
+function notify(message, type = 'success') {
+    const note = document.getElementById('status-notification');
+    note.textContent = message;
+    note.className = `status-notification visible ${type}`;
+    
+    setTimeout(() => {
+        note.classList.remove('visible');
+    }, 4000);
+}
+
 function sendToTelegram() {
-  // Получаем данные из полей
-  const isConfirmed = document.getElementById('confirm-check').checked;
-  const guestName = document.getElementById('name-input').value.trim();
-  const gift = document.getElementById('gift-check').checked;
-  const msg = document.getElementById('msg-input').value.trim();
+    const isConfirmed = document.getElementById('confirm-check').checked;
+    const guestName = document.getElementById('name-input').value.trim();
+    const gift = document.getElementById('gift-check').checked;
+    const msg = document.getElementById('msg-input').value.trim();
 
-  // 1. Проверка: подтвердил ли присутствие
-  if (!isConfirmed) {
-    alert("Пожалуйста, подтвердите свое присутствие, поставив галочку.");
-    return;
-  }
+    // Глубокая валидация
+    if (!isConfirmed) {
+        notify("Пожалуйста, подтвердите присутствие ✅", "error");
+        return;
+    }
 
-  // 2. Проверка: ввел ли имя
-  if (guestName === "") {
-    alert("Пожалуйста, введите ваше имя в поле 'Кто вы?'");
-    return;
-  }
+    if (guestName.length < 2) {
+        notify("Пожалуйста, введите ваше имя ✍️", "error");
+        return;
+    }
 
-  // Формируем красивый текст для Telegram
-  let text = `👰🤵 НОВОЕ ПОДТВЕРЖДЕНИЕ\n\n`;
-  text += `👤 Имя: ${guestName}\n`;
-  text += `✅ Статус: Придет на свадьбу\n`;
-  text += `🎁 Подарок: ${gift ? 'Денежный 💵' : 'Пока не указано'}\n`;
-  if (msg) {
-    text += `💌 Сообщение: ${msg}`;
-  }
+    let text = `👰🤵 НОВОЕ ПОДТВЕРЖДЕНИЕ\n\n`;
+    text += `👤 Имя: ${guestName}\n`;
+    text += `✅ Статус: Придет на свадьбу\n`;
+    text += `🎁 Подарок: ${gift ? 'Денежный 💵' : 'Пока не указано'}\n`;
+    if (msg) text += `💌 Сообщение: ${msg}`;
 
-  // Отправляем данные
-  sendTelegram(text);
+    sendTelegram(text);
 }
 
 function sendTelegram(text) {
-  // 1. Сначала отправляем сообщение БОТУ в фоновом режиме (скрыто)
-  fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-        chat_id: TG_CHAT_ID, 
-        text: text + "\n\n(Дубликат отправлен гостем в ЛС)" 
-    })
-  })
-  .then(response => {
-    // 2. Открываем чат с твоим аккаунтом (jasurbek27) с подставленным текстом
-    const encodedText = encodeURIComponent(text);
-    const directLink = `https://t.me/${TG_USERNAME}?text=${encodedText}`;
-    
-    window.open(directLink, '_blank');
+    notify("Отправляем... ⏳", "loading");
 
-    // 3. Показываем сообщение об успехе на сайте
-    showSuccess();
-    clearForm();
-  })
-  .catch(error => {
-    // Резервный вариант: если fetch не сработал, просто открываем личку
-    window.open(`https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`, '_blank');
-    showSuccess();
-  });
+    // Блокируем кнопку, чтобы не спамили
+    const btn = document.querySelector('.rsvp-btn'); // Убедись, что у кнопки есть этот класс
+    if(btn) btn.disabled = true;
+
+    fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            chat_id: TG_CHAT_ID, 
+            text: text + "\n\n(Дубликат отправлен гостем в ЛС)" 
+        })
+    })
+    .then(async (response) => {
+        const data = await response.json();
+
+        if (response.ok && data.ok) {
+            // СЛУЧАЙ 1: Бот получил сообщение успешно
+            notify("Данные отправлены боту! Открываем чат... 🚀", "success");
+            
+            setTimeout(() => {
+                const directLink = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`;
+                window.open(directLink, '_blank');
+                clearForm();
+            }, 1000);
+
+        } else {
+            // СЛУЧАЙ 2: Бот ответил ошибкой (например, неверный токен или chat_id)
+            console.error("Ошибка API Telegram:", data);
+            throw new Error(data.description || "Ошибка сервера");
+        }
+    })
+    .catch(error => {
+        // СЛУЧАЙ 3: Сеть упала или бот не сработал
+        console.error("Ошибка отправки:", error);
+        notify("Бот временно недоступен. Отправляем в личные сообщения...", "error");
+        
+        // Резервный переход в ЛС в любом случае
+        setTimeout(() => {
+            window.open(`https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`, '_blank');
+        }, 1500);
+    })
+    .finally(() => {
+        if(btn) btn.disabled = false;
+    });
 }
 
 /* ═══════════ ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ═══════════ */
