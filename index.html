@@ -1250,44 +1250,38 @@ function sendToTelegram() {
 }
 
 function sendTelegram(text) {
-    notify("Отправляем... ⏳", "loading");
+    // ✅ Открываем окно СРАЗУ — пока браузер считает это жестом пользователя
+    const tgWindow = window.open('', '_blank');
 
-    // Блокируем кнопку, чтобы не спамили
-    const btn = document.querySelector('.rsvp-btn'); // Убедись, что у кнопки есть этот класс
+    notify("Отправляем... ⏳", "loading");
+    const btn = document.querySelector('.rsvp-btn');
     if(btn) btn.disabled = true;
 
     fetch('/api/send', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ text: text }),  // text — та строка, которую ты уже формируешь
-})
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+    })
     .then(async (response) => {
         const data = await response.json();
 
         if (response.ok && data.ok) {
-            // СЛУЧАЙ 1: Бот получил сообщение успешно
-            notify("Данные отправлены боту! Открываем чат... 🚀", "success");
-            
+            notify("Данные отправлены! Открываем чат... 🚀", "success");
             setTimeout(() => {
                 const directLink = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`;
-                window.open(directLink, '_blank');
+                tgWindow.location.href = directLink; // ← меняем адрес уже открытого окна
                 clearForm();
             }, 1000);
-
         } else {
-            // СЛУЧАЙ 2: Бот ответил ошибкой (например, неверный токен или chat_id)
-            console.error("Ошибка API Telegram:", data);
             throw new Error(data.description || "Ошибка сервера");
         }
     })
     .catch(error => {
-        // СЛУЧАЙ 3: Сеть упала или бот не сработал
         console.error("Ошибка отправки:", error);
-        notify("Бот временно недоступен. Отправляем в личные сообщения...", "error");
-        
-        // Резервный переход в ЛС в любом случае
+        notify("Бот временно недоступен. Открываем чат...", "error");
         setTimeout(() => {
-            window.open(`https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`, '_blank');
+            const directLink = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(text)}`;
+            tgWindow.location.href = directLink; // ← то же самое в fallback
         }, 1500);
     })
     .finally(() => {
