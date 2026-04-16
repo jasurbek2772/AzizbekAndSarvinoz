@@ -922,8 +922,9 @@ textarea:focus {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
-
-  <script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
     // 1. Регистрируем плагины
     gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
@@ -1011,10 +1012,7 @@ gsap.to("#heart-group", { // Двигаем группу!
       <div class="info-card-title">ПОЖЕЛАНИЯ ПО ПОДАРКАМ</div>
       <p>Ваше присутствие в день нашей свадьбы — самый значимый подарок для нас!</p>
     </div>
-    <div class="info-card">
-      <div class="info-card-title">ПРИМЕЧАНИЕ</div>
-      <p>Будем благодарны, если вы воздержитесь от криков «Горько!» на празднике, ведь поцелуй — это знак выражения чувств, он не может быть по заказу.</p>
-    </div>
+
     <div class="info-card">
       <div class="info-card-title">ФОТО</div>
       <p>Опубликуйте фото дня нашей свадьбы в соц. сетях с хештегом <strong style="color:var(--gold-d)">#20.08</strong> ❤️</p>
@@ -1032,20 +1030,22 @@ gsap.to("#heart-group", { // Двигаем группу!
         <input type="text" id="name-input" placeholder="Кто вы?" 
                style="width: 100%; padding: 12px; border: 1px solid var(--sky-light); border-radius: 8px; margin-bottom: 20px; outline: none; font-family: inherit;">
 
-        <div class="checkbox-row" style="margin-bottom: 15px;">
-            <input type="checkbox" id="confirm-check">
-            <label for="confirm-check" style="font-weight: 600; color: var(--sky-dark);">Я подтверждаю свое присутствие</label>
-        </div>
+<div class="checkbox-row" style="margin-bottom: 15px;">
+    <input type="checkbox" id="confirm-check">
+    <label for="confirm-check" style="font-weight: 600; color: var(--sky-dark);">Я подтверждаю свое присутствие</label>
+</div>
 
-        <div class="checkbox-row">
-            <input type="checkbox" id="gift-check">
-            <label for="gift-check">Планирую денежный подарок</label>
-        </div>
+<div class="checkbox-row">
+    <input type="checkbox" id="cannot-check">
+    <label for="cannot-check" style="color: #d32f2f;">
+        К сожалению, не смогу прибыть на торжество 😔
+    </label>
+</div>
 
         <label class="form-label" style="margin-top: 20px;">💬 Сообщение для жениха и невесты</label>
         <textarea id="msg-input" placeholder="Ваше пожелание (необязательно)..."></textarea>
         
-        <button class="btn-main" onclick="sendToTelegram()" style="width: 100%; margin-top: 15px;">
+        <button class="btn-main" onclick="sendToTelegram()" style="width: 100%; margin-top: 15px;" id="btn-send">
             ✈ &nbsp;Отправить подтверждение
         </button>
 
@@ -1210,6 +1210,176 @@ function updateCD() {
 }
 setInterval(updateCD, 1000);
 
+
+/* ── Фейрверки ── */
+
+// Инициализируем конфетти один раз
+function triggerHappyExplosionFromCheckbox() {
+    const checkbox = document.getElementById('confirm-check');
+    const label = checkbox.nextElementSibling; // лейбл рядом с чекбоксом
+
+    // Получаем координаты центра лейбла (или чекбокса)
+    const rect = label.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;   // центр по горизонтали
+    const y = rect.top + rect.height / 2;   // центр по вертикали
+
+    // Нормализуем в диапазон 0–1 (требуется для canvas-confetti)
+    const originX = x / window.innerWidth;
+    const originY = y / window.innerHeight;
+
+    // Первый мощный "взрыв радости"
+    confetti({
+        particleCount: 90,
+        spread: 120,
+        origin: { x: originX, y: originY },
+        emojiSize: 30,
+        ticks: 180,           // сколько кадров живут эмодзи
+        gravity: 0.7,
+        scalar: 1.2,
+        drift: 0
+    });
+}
+
+// Привязываем взрыв к чекбоксу confirm-check
+document.getElementById('confirm-check').addEventListener('change', function() {
+    if (this.checked) {
+        triggerHappyExplosionFromCheckbox();
+
+        // Снимаем галочку с подтверждения присутствия
+        const confirmCheck = document.getElementById('cannot-check');
+        if (confirmCheck) confirmCheck.checked = false;
+    }
+});
+
+function triggerSadExplosionFromCheckbox() {
+    const checkbox = document.getElementById('cannot-check');
+    const label = checkbox.nextElementSibling;   // это <label>
+
+    const rect = label.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    const originX = x / window.innerWidth;
+    const originY = y / window.innerHeight;
+
+    // Создаём эмодзи-формы один раз (лучше делать вне функции, но для простоты здесь)
+    const sadEmojis = [
+        confetti.shapeFromText({ text: '😔', scalar: 2.5 }),
+        confetti.shapeFromText({ text: '😢', scalar: 2.5 }),
+        confetti.shapeFromText({ text: '😭', scalar: 2.5 }),
+        confetti.shapeFromText({ text: '🥀', scalar: 2.8 }),
+        confetti.shapeFromText({ text: '💔', scalar: 2.5 }),
+        confetti.shapeFromText({ text: '🌧️', scalar: 2.5 }),
+        confetti.shapeFromText({ text: '💧', scalar: 2.2 })
+    ];
+
+    // Основной грустный взрыв
+    confetti({
+        particleCount: 80,
+        spread: 100,           // разлёт в стороны
+        origin: { x: originX, y: originY },
+        shapes: sadEmojis,
+        scalar: 1.8,           // размер эмодзи
+        ticks: 200,
+        gravity: 0.75,
+        drift: 0,
+        flat: false
+    });
+
+    // Дополнительный маленький "дождь слёз" чуть ниже
+    setTimeout(() => {
+        confetti({
+            particleCount: 45,
+            spread: 70,
+            origin: { x: originX, y: originY + 0.05 },
+            shapes: [
+                confetti.shapeFromText({ text: '💧', scalar: 2 }),
+                confetti.shapeFromText({ text: '😢', scalar: 2 }),
+                confetti.shapeFromText({ text: '🌧️', scalar: 2 })
+            ],
+            scalar: 1.4,
+            gravity: 1.1,
+            ticks: 150
+        });
+    }, 220);
+}
+document.getElementById('cannot-check').addEventListener('change', function() {
+    if (this.checked) {
+        triggerSadExplosionFromCheckbox();
+
+        // Снимаем галочку с "присутствия"
+        const confirmCheck = document.getElementById('confirm-check');
+        if (confirmCheck) confirmCheck.checked = false;
+    }
+});
+
+// Функция взрыва эмодзи при нажатии кнопки "Отправить"
+function triggerSendExplosionFromButton() {
+    const button = document.getElementById('btn-send');
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    const originX = x / window.innerWidth;
+    const originY = y / window.innerHeight;
+
+    // Праздничные эмодзи для свадьбы
+    const happyEmojis = [
+        confetti.shapeFromText({ text: '❤️', scalar: 2.6 }),
+        confetti.shapeFromText({ text: '💍', scalar: 2.8 }),
+        confetti.shapeFromText({ text: '🌸', scalar: 2.5 }),
+        confetti.shapeFromText({ text: '🎉', scalar: 2.7 }),
+        confetti.shapeFromText({ text: '🥂', scalar: 2.6 }),
+        confetti.shapeFromText({ text: '💕', scalar: 2.5 }),
+        confetti.shapeFromText({ text: '✨', scalar: 2.4 })
+    ];
+
+    // Основной красивый взрыв от кнопки
+    confetti({
+        particleCount: 100,
+        spread: 110,
+        origin: { x: originX, y: originY },
+        shapes: happyEmojis,
+        scalar: 1.9,
+        ticks: 220,
+        gravity: 0.8,
+        drift: 0,
+        flat: false
+    });
+
+    // Дополнительный всплеск чуть позже (больше блеска)
+    setTimeout(() => {
+        confetti({
+            particleCount: 60,
+            spread: 80,
+            origin: { x: originX, y: originY - 0.05 },
+            shapes: [
+                confetti.shapeFromText({ text: '✨', scalar: 2.2 }),
+                confetti.shapeFromText({ text: '💖', scalar: 2.3 }),
+                confetti.shapeFromText({ text: '🌟', scalar: 2.1 })
+            ],
+            scalar: 1.6,
+            gravity: 0.6,
+            ticks: 180
+        });
+    }, 180);
+}
+
+// Привязываем взрыв к кнопке отправки
+// Важно: кнопка — это обычно <button>, а не <input type="checkbox">, 
+// поэтому используем 'click' вместо 'change'
+//document.getElementById('btn-send').addEventListener('click', function() {
+    // Запускаем взрыв сразу при клике
+    //triggerSendExplosionFromButton();
+    
+    // Дальше идёт ваша логика отправки (sendToTelegram() и т.д.)
+//});
+
 /* ═══════════ TELEGRAM LOGIC ═══════════ */
 
 /* ── УЛУЧШЕННАЯ ЛОГИКА УВЕДОМЛЕНИЙ ── */
@@ -1222,45 +1392,61 @@ function notify(message, type = 'success') {
         note.classList.remove('visible');
     }, 4000);
 }
+  document.getElementById('confirm-check').addEventListener('change', function() {
+    if (this.checked) document.getElementById('cannot-check').checked = false;
+});
 
+document.getElementById('cannot-check').addEventListener('change', function() {
+    if (this.checked) document.getElementById('confirm-check').checked = false;
+});
 function sendToTelegram() {
     const isConfirmed = document.getElementById('confirm-check').checked;
+    const isCannotAttend = document.getElementById('cannot-check').checked;
     const guestName = document.getElementById('name-input').value.trim();
-    const gift = document.getElementById('gift-check').checked;
     const msg = document.getElementById('msg-input').value.trim();
 
-    if (!isConfirmed) {
-        notify("Пожалуйста, подтвердите присутствие ✅", "error");
+    if (!isConfirmed && !isCannotAttend) {
+        notify("Пожалуйста, отметьте один из вариантов ✅ или 😔", "error");
         return;
     }
+
     if (guestName.length < 2) {
         notify("Пожалуйста, введите ваше имя ✍️", "error");
         return;
     }
 
-    // 📨 Текст для бота (технический)
-    let botText = `👰🤵 НОВОЕ ПОДТВЕРЖДЕНИЕ\n\n`;
-    botText += `👤 Имя: ${guestName}\n`;
-    botText += `✅ Статус: Придет на свадьбу\n`;
-    botText += `🎁 Подарок: ${gift ? 'Денежный 💵' : 'Пока не указано'}\n`;
-    if (msg) botText += `💌 Сообщение: ${msg}`;
+    const willAttend = isConfirmed && !isCannotAttend;
+    triggerSendExplosionFromButton();
+    // Технический текст для бота
+    let botText = willAttend 
+        ? `👰🤵 НОВОЕ ПОДТВЕРЖДЕНИЕ\n\n`
+        : `😔 НОВОЕ ОТКЛОНЕНИЕ\n\n`;
 
-    // 💌 Текст для жениха (красивый, от имени гостя)
-    let userText = `Уважаемые Азизбек и Сарвиноз! 🌸\n\n`;
-    userText += `Меня зовут ${guestName}.\n`;
-    userText += `Спасибо большое за приглашение — это очень приятно!\n\n`;
-    userText += `С радостью подтверждаю своё присутствие на вашем торжестве. `;
-    userText += `Желаю вам безграничного счастья, любви и здоровья! 💍\n\n`;
-    if (gift) {
-        userText += `В качестве подарка планирую денежный подарок 💵\n\n`;
-    }
-    if (msg) {
-        userText += `Хочу добавить: ${msg}\n\n`;
-    }
-    userText += `С уважением, ${guestName} 🙏`;
+    botText += `👤 Имя: ${guestName}\n`;
+    botText += `📍 Статус: ${willAttend ? 'Придет на свадьбу ✅' : 'Не сможет прийти 😔'}\n`;
+    if (msg) botText += `💌 Сообщение: ${msg}\n`;
+
+    // Красивый текст для жениха и невесты
+    let userText = willAttend 
+        ? `Уважаемые Азизбек и Сарвиноз! 🌸\n\n` +
+          `Меня зовут ${guestName}.\n` +
+          `Спасибо большое за приглашение!\n\n` +
+          `С радостью подтверждаю своё присутствие на вашем торжестве. ` +
+          `Желаю вам безграничного счастья, любви и здоровья! 💍❤️\n\n` +
+          (msg ? `Хочу добавить: ${msg}\n\n` : '') +
+          `С уважением, ${guestName} 🙏`
+        : `Уважаемые Азизбек и Сарвиноз! 😔\n\n` +
+          `Меня зовут ${guestName}.\n\n` +
+          `Очень сожалею, но я не смогу присутствовать на вашем торжестве...\n\n` +
+          `🌧️💧😢 🌧️💧😭 🌧️💧🥀 💔🌧️😔 🌧️💧\n\n` +
+          `От всего сердца желаю вам самой красивой и счастливой свадьбы! ` +
+          `Пусть этот день будет наполнен любовью, радостью и теплом 💕💍\n\n` +
+          (msg ? `Хочу добавить: ${msg}\n\n` : '') +
+          `С огромным уважением и теплыми пожеланиями,\n${guestName} 🙏`;
 
     sendTelegram(botText, userText);
 }
+
 function sendTelegram(botText, userText) {
     const tgWindow = window.open('', '_blank');
     notify("Отправляем... ⏳", "loading");
@@ -1292,6 +1478,7 @@ function sendTelegram(botText, userText) {
         setTimeout(() => {
             const directLink = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(userText)}`;
             tgWindow.location.href = directLink;
+            clearForm()
         }, 1500);
     })
     .finally(() => {
