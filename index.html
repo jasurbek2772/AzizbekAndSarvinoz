@@ -1513,10 +1513,44 @@ function clearForm() {
 
 /* ── КАЛЕНДАРЬ И АНИМАЦИИ ПРИ СКРОЛЛЕ ── */
 const calBtn = document.getElementById('cal-btn');
-if(calBtn) {
+
+if (calBtn) {
   calBtn.addEventListener('click', e => {
     e.preventDefault();
-    window.open('https://www.google.com/calendar/render?action=TEMPLATE&text=Свадьба+Азизбека+%26+Сарвиноз&dates=20260820T180000/20260820T230000&location=Красноярск', '_blank');
+
+    // Формируем содержимое ICS файла
+    // Обратите внимание: переносы строк важны для формата ICS
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Wedding Invitation//RU',
+      'BEGIN:VEVENT',
+      'DTSTART:20260820T180000',
+      'DTEND:20260821T000000',
+      'SUMMARY:Свадьба Азизбек & Сарвиноз',
+      'LOCATION:Ресторан «Корона», Красноярск',
+      'DESCRIPTION:Свадебное торжество',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n'); // Используем \r\n для максимальной совместимости
+
+    // Создаем Blob объект
+    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+    
+    // Создаем ссылку для скачивания
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    
+    a.href = url;
+    a.download = "wedding-azizbek-sarvinoz.ics";
+    
+    // Добавляем ссылку в DOM, кликаем и удаляем (некоторые браузеры требуют наличия в DOM)
+    document.body.appendChild(a);
+    a.click();
+    
+    // Очистка
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   });
 }
 
