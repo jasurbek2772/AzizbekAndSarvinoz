@@ -494,6 +494,59 @@ background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/200
       margin-top: 35px;
     }
 
+
+/* ═══════════════════════════════════════════
+   AUGUST CALENDAR
+═══════════════════════════════════════════ */
+.aug-cal-wrap { padding: 2rem 0; text-align: center; }
+.aug-cal-month { font-family: 'Cormorant SC', serif; font-size: 22px; letter-spacing: 4px; color: var(--text-dark); margin-bottom: 6px; font-weight: 400; }
+.aug-cal-year { font-family: 'Cormorant SC', serif; font-size: 13px; letter-spacing: 3px; color: var(--text-medium); margin-bottom: 24px; }
+.aug-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; max-width: 380px; margin: 0 auto; }
+.aug-cal-dow { font-size: 11px; letter-spacing: 1px; color: var(--text-medium); padding: 4px 0; text-transform: uppercase; }
+.aug-cal-day { width: 100%; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; color: var(--text-dark); border-radius: 50%; }
+.aug-cal-day.special { background: rgba(192,36,90,0.08); }
+.aug-cal-day.special .aug-day-num { color: #c0245a; font-weight: 600; }
+.aug-day-num { font-size: 14px; line-height: 1; }
+.aug-heart { font-size: 16px; line-height: 1; margin-bottom: 1px; color: #c0245a; animation: augHeartbeat 1.2s ease-in-out infinite; }
+.aug-cal-day.d19 .aug-heart { animation-delay: 0s; }
+.aug-cal-day.d20 .aug-heart { animation-delay: 0.2s; }
+@keyframes augHeartbeat {
+  0%,100% { transform: scale(1); }
+  14% { transform: scale(1.25); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.15); }
+  56% { transform: scale(1); }
+}
+.aug-cal-badge { font-family: 'Cormorant SC', serif; font-size: 10px; letter-spacing: 0.5px; color: #c0245a; margin-top: 1px; line-height: 1; }
+.aug-cal-legend { display: flex; gap: 24px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+.aug-legend-item { display: flex; align-items: center; gap: 6px; }
+.aug-heart-icon { font-size: 14px; color: #c0245a; }
+.aug-legend-text { font-size: 12px; color: var(--text-medium); letter-spacing: 0.5px; }
+
+.aug-cal-day { position: relative; }
+.heart-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -54%) scale(0.95);
+  width: 44px; height: 40px;
+  animation: pulse-ring 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+.aug-cal-day.d20 .heart-ring { animation-delay: 0.3s; }
+@keyframes pulse-ring {
+  0%,100% { transform: translate(-50%, -54%) scale(0.95); opacity: 1; }
+  50%      { transform: translate(-50%, -54%) scale(1.08); opacity: 0.8; }
+}
+.aug-cal-day.special .aug-day-num { color: #c0245a; font-weight: 600; position: relative; z-index: 2; }
+.aug-cal-badge { position: relative; z-index: 2; }
+.aug-cloud-bg {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  border-radius: 30% 40% 55% 45% / 45% 25% 40% 60%;
+  padding: 28px 20px 32px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
 /* ═══════════════════════════════════════════
    COUNTDOWN
 ═══════════════════════════════════════════ */
@@ -807,6 +860,14 @@ textarea:focus {
 .sched-event-title { font-size: 17px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; }
 .sched-place { font-size: 12px; color: var(--sky-deep); letter-spacing: 0.5px; margin-bottom: 5px; }
 .sched-desc { font-size: 14px; color: var(--text-medium); line-height: 1.6; }
+.date-toggle { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 36px; }
+.date-btn { font-family: 'Cormorant SC', serif; font-size: 15px; font-weight: 400; letter-spacing: 2px; color: var(--sky-deep); background: transparent; border: 0.5px solid var(--sky-bright); padding: 10px 24px; cursor: pointer; transition: all 0.25s ease; outline: none; }
+.date-btn:first-child { border-radius: 4px 0 0 4px; border-right: none; }
+.date-btn:last-child { border-radius: 0 4px 4px 0; border-left: none; }
+.date-btn.active { background: var(--sky-bright); color: #fff; border-color: var(--sky-bright); }
+.date-btn:not(.active):hover { background: rgba(14, 165, 233, 0.08); }
+.schedule-panel { display: none; }
+.schedule-panel.visible { display: block; }
 
 /* ═══════════════════════════════════════════
    FOOTER
@@ -913,7 +974,7 @@ textarea:focus {
         <div class="hero-name groom">Sarvinoz</div>
         </div>
         <div class="hero-tagline">Приглашаем разделить радость нашей свадьбы</div>
-        <div class="hero-venue">19 августа 2026 · Ресторан «Корона» · Красноярск <br>20 августа 2026 · Ресторан «Корона» · Красноярск</div>
+        <div class="hero-venue">19 августа 2026 · Ресторан «Версаль» · Красноярск <br>20 августа 2026 · Ресторан «Корона» · Красноярск</div>
         
         <div class="hero-quote">Ждём всех на нашей свадьбе!</div>
     </div>
@@ -945,6 +1006,71 @@ gsap.to("#heart-group", { // Двигаем группу!
   ease: "none"
 });
   </script>
+<!-- ══════════════════════════════════════
+     AUGUST CALENDAR
+══════════════════════════════════════ -->
+<div class="aug-cal-wrap">
+  <div class="aug-cal-month">Август</div>
+  <div class="aug-cal-year">2026</div>
+  <div class="aug-cloud-bg">
+  <div class="aug-cal-grid" id="aug-cal"></div>
+  </div>
+  <div class="aug-cal-legend">
+    <div class="aug-legend-item">
+      <span class="aug-heart-icon">♥</span>
+      <span class="aug-legend-text">19 · Девичник · Ресторан «Версаль»</span>
+    </div>
+    <div class="aug-legend-item">
+      <span class="aug-heart-icon">♥</span>
+      <span class="aug-legend-text">20 · Свадьба · Ресторан «Корона»</span>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  const dows = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  const grid = document.getElementById('aug-cal');
+
+  dows.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'aug-cal-dow';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const firstDay = new Date(2026, 7, 1).getDay();
+  const offset = firstDay === 0 ? 6 : firstDay - 1;
+  for (let i = 0; i < offset; i++) {
+    grid.appendChild(Object.assign(document.createElement('div'), {className:'aug-cal-day'}));
+  }
+
+  for (let d = 1; d <= 31; d++) {
+    const cell = document.createElement('div');
+    cell.className = 'aug-cal-day';
+
+    if (d === 19 || d === 20) {
+      cell.classList.add('special', 'd' + d);
+      cell.innerHTML = `<svg class="heart-ring" viewBox="0 0 44 40" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <path d="M22 36 C22 36 4 24 4 13 C4 7.5 8.5 3 14 3 C17.5 3 20.5 5 22 8 C23.5 5 26.5 3 30 3 C35.5 3 40 7.5 40 13 C40 24 22 36 22 36Z"
+          stroke="#c0245a" stroke-width="1.2" fill="none" opacity="0.85"/>
+      </svg>`;
+      const num = document.createElement('div');
+      num.className = 'aug-day-num';
+      num.textContent = d;
+      const badge = document.createElement('div');
+      badge.className = 'aug-cal-badge';
+      badge.textContent = d === 19 ? 'Девичник' : 'Свадьба';
+      cell.append(num, badge);
+    } else {
+      const num = document.createElement('div');
+      num.className = 'aug-day-num';
+      num.textContent = d;
+      cell.appendChild(num);
+    }
+    grid.appendChild(cell);
+  }
+})();
+</script>
 
   <div class="countdown-wrap">
     <hr class="cd-divider">
@@ -1055,7 +1181,33 @@ gsap.to("#heart-group", { // Двигаем группу!
     </div>
 </section>
 
-  <section class="reveal">
+ <section class="reveal">
+  <div class="date-toggle">
+    <button class="date-btn active" onclick="switchDay('19')" id="btn-19">19.08.26</button>
+    <button class="date-btn" onclick="switchDay('20')" id="btn-20">20.08.26</button>
+  </div>
+
+  <div class="schedule-panel visible" id="panel-19">
+    <div class="schedule-title">Свадебное расписание</div>
+    <div class="sched-item">
+      <div class="sched-time">18:00</div>
+      <div>
+        <div class="sched-event-title">Праздничный банкет</div>
+        <div class="sched-place">Банкетный зал · Ресторан «Версаль»</div>
+        <div class="sched-desc">Здесь пройдёт наш Девичий вечер</div>
+      </div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-time">23:00</div>
+      <div>
+        <div class="sched-event-title">Окончание праздничного дня</div>
+        <div class="sched-place">Терраса ресторана</div>
+        <div class="sched-desc">Даже такой день может когда-то подойти к концу</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="schedule-panel" id="panel-20">
     <div class="schedule-title">Свадебное расписание</div>
     <div class="sched-item">
       <div class="sched-time">12:00</div>
@@ -1097,7 +1249,8 @@ gsap.to("#heart-group", { // Двигаем группу!
         <div class="sched-desc">Даже такой день может когда-то подойти к концу</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <div class="footer">
     <div class="footer-names">Azizbek and Sarvinoz</div>
@@ -1127,6 +1280,15 @@ gsap.to("#heart-group", { // Двигаем группу!
 .status-notification.success { background: #4BB543; }
 .status-notification.loading { background: #b59410; }
 </style>
+
+<script>
+function switchDay(day) {
+  document.querySelectorAll('.schedule-panel').forEach(p => p.classList.remove('visible'));
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + day).classList.add('visible');
+  document.getElementById('btn-' + day).classList.add('active');
+}
+</script>
 
 <script>
 
