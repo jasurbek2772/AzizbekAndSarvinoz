@@ -1280,11 +1280,8 @@ function sendTelegram(botText, userText) {
   .then(async (response) => {
     const data = await response.json();
     if (response.ok && data.ok) {
-      notify("Данные отправлены! Открываем чат... 🚀", "success");
-      setTimeout(() => {
-        tgWindow.location.href = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(userText)}`;
-        clearForm();
-      }, 1000);
+      notify("Данные отправлены! ", "success");
+      
     } else {
       throw new Error(data.description || "Ошибка сервера");
     }
