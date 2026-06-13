@@ -984,34 +984,7 @@ textarea:focus {
     </div>
   </section>
 
-  <section class="reveal highlight">
-    <div class="section-label">ПОДТВЕРЖДЕНИЕ</div>
-    <p style="text-align:center; color:var(--text-medium); font-size:15px; margin-bottom:28px;">
-      Пожалуйста, подтвердите своё присутствие до 01.08.2026
-    </p>
-    <div class="form-wrap">
-      <label class="form-label">👤 Ваше имя и фамилия</label>
-      <input type="text" id="name-input" placeholder="Кто вы?" 
-             style="width: 100%; padding: 12px; border: 1px solid var(--sky-light); border-radius: 8px; margin-bottom: 20px; outline: none; font-family: inherit;">
-      <div class="checkbox-row" style="margin-bottom: 15px;">
-        <input type="checkbox" id="confirm-check">
-        <label for="confirm-check" style="font-weight: 600; color: var(--sky-dark);">Я подтверждаю свое присутствие</label>
-      </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="cannot-check">
-        <label for="cannot-check" style="color: #d32f2f;">К сожалению, не смогу прибыть на торжество 😔</label>
-      </div>
-      <label class="form-label" style="margin-top: 20px;">💬 Сообщение для жениха и невесты</label>
-      <textarea id="msg-input" placeholder="Ваше пожелание (необязательно)..."></textarea>
-      <button class="btn-main" onclick="sendToTelegram()" style="width: 100%; margin-top: 15px;" id="btn-send">
-        ✈ &nbsp;Отправить подтверждение
-      </button>
-      <div class="success-msg" id="success-msg" style="display: none; text-align: center; margin-top: 15px; color: green; font-weight: bold;">
-        Спасибо! Сообщение отправлено 🎉
-      </div>
-    </div>
-  </section>
-
+ 
   <section class="reveal">
     <div class="date-toggle">
       <!-- Убрали active -->
@@ -1090,6 +1063,35 @@ textarea:focus {
       </div>
     </div>
 </section>
+
+   <section class="reveal highlight">
+    <div class="section-label">ПОДТВЕРЖДЕНИЕ</div>
+    <p style="text-align:center; color:var(--text-medium); font-size:15px; margin-bottom:28px;">
+      Пожалуйста, подтвердите своё присутствие до 01.08.2026
+    </p>
+    <div class="form-wrap">
+      <label class="form-label">👤 Ваше имя и фамилия</label>
+      <input type="text" id="name-input" placeholder="Кто вы?" 
+             style="width: 100%; padding: 12px; border: 1px solid var(--sky-light); border-radius: 8px; margin-bottom: 20px; outline: none; font-family: inherit;">
+      <div class="checkbox-row" style="margin-bottom: 15px;">
+        <input type="checkbox" id="confirm-check">
+        <label for="confirm-check" style="font-weight: 600; color: var(--sky-dark);">Я подтверждаю свое присутствие</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="cannot-check">
+        <label for="cannot-check" style="color: #d32f2f;">К сожалению, не смогу прибыть на торжество 😔</label>
+      </div>
+      <label class="form-label" style="margin-top: 20px;">💬 Сообщение для жениха и невесты</label>
+      <textarea id="msg-input" placeholder="Ваше пожелание (необязательно)..."></textarea>
+      <button class="btn-main" onclick="sendToTelegram()" style="width: 100%; margin-top: 15px;" id="btn-send">
+        ✈ &nbsp;Отправить подтверждение
+      </button>
+      <div class="success-msg" id="success-msg" style="display: none; text-align: center; margin-top: 15px; color: green; font-weight: bold;">
+        Спасибо! Сообщение отправлено 🎉
+      </div>
+    </div>
+  </section>
+
 
   <div class="footer">
     <div class="footer-names">Azizbek and Sarvinoz</div>
