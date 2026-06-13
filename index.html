@@ -1117,7 +1117,7 @@ function switchDay(day) {
   document.getElementById('btn-' + day).classList.add('active');
 }
 
-const TG_USERNAME = 'jasurbek27';
+const TG_USERNAME = 'wedding20_08';
 let envelopeOpened = false;
 
 function openEnvelope() {
@@ -1281,7 +1281,11 @@ function sendTelegram(botText, userText) {
     const data = await response.json();
     if (response.ok && data.ok) {
       notify("Данные отправлены! ", "success");
-      
+      setTimeout(() => {
+        tgWindow.location.href = `https://t.me/${TG_USERNAME}?text=${encodeURIComponent(userText)}`;
+        clearForm();
+      }, 1000);
+
     } else {
       throw new Error(data.description || "Ошибка сервера");
     }
