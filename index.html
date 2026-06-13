@@ -840,7 +840,7 @@ textarea:focus {
 <body>
 
 <div id="intro">
-  <div class="handwriting-container" onclick="openEnvelope()">
+  <div class="handwriting-container">
     <div class="text-reveal">Мы женимся!</div>
   </div>
 </div>
@@ -1134,9 +1134,7 @@ function openEnvelope() {
   document.body.style.overflow = 'auto';
   document.documentElement.style.overflow = 'auto';
 
-  if (mainContent) {
-    mainContent.classList.add('visible');
-  }
+  if (mainContent) mainContent.classList.add('visible');
 
   if (intro) {
     intro.style.transition = 'opacity 0.8s ease';
@@ -1145,6 +1143,16 @@ function openEnvelope() {
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const text = document.querySelector('.text-reveal');
+
+  if (text) {
+    text.addEventListener('animationend', () => {
+      openEnvelope();
+    });
+  }
+});
+  
 window.addEventListener('wheel', (e) => {
   if (e.deltaY > 0 && !envelopeOpened) openEnvelope();
 }, { passive: true });
