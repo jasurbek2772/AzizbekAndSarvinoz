@@ -287,27 +287,7 @@ body {
   background-repeat: no-repeat;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 80%, rgba(255, 184, 204, 0.6) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(245, 215, 142, 0.2) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 1;
-}
 
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 0.5px);
-  background-size: 30px 30px;
-  background-repeat: repeat;
-  pointer-events: none;
-  z-index: 1;
-}
 
 .svg-wrapper {
   position: absolute;
@@ -357,7 +337,7 @@ body {
 }
 
 .hero-date {
-  font-size: 16px;
+  font-size: 26px;
   letter-spacing: 5px;
   color: var(--gold-d);
   margin-bottom: 55px;
@@ -400,7 +380,8 @@ body {
   font-family: 'Great Vibes', cursive;
   font-size: 32px;
   color: var(--text-dark);
-  margin-top: 35px;
+  margin-top: 45px;
+  margin-bottom: 40px;
 }
 
 /* CALENDAR */
@@ -427,7 +408,7 @@ body {
 .aug-cal-legend { display: flex; gap: 24px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
 .aug-legend-item { display: flex; align-items: center; gap: 6px; }
 .aug-heart-icon { font-size: 14px; color: #c0245a; }
-.aug-legend-text { font-size: 12px; color: var(--text-medium); letter-spacing: 0.5px; }
+.aug-legend-text { font-size: 25px; color: var(--text-medium); letter-spacing: 0.5px; }
 
 .aug-cal-day { position: relative; }
 .heart-ring {
@@ -879,9 +860,8 @@ textarea:focus {
       <div class="hero-name bride">Azizbek</div>
       <span class="hero-amp">and</span>
       <div class="hero-name groom">Sarvinoz</div>
-      <div class="hero-tagline">Приглашаем разделить радость нашей свадьбы</div>
-      <div class="hero-venue">19 августа 2026 · Ресторан «Версаль» · Красноярск <br>20 августа 2026 · Ресторан «Корона» · Красноярск</div>
-      <div class="hero-quote">Ждём всех на нашей свадьбе!</div>
+      
+            <div class="hero-quote">Ждём всех на нашей свадьбе!</div>
     </div>
   </div>
 
@@ -988,27 +968,11 @@ textarea:focus {
     <p class="greet-text">
       Мы рады сообщить Вам, что 20.08.2026 состоится самое главное торжество в нашей жизни — день нашей свадьбы! Приглашаем Вас разделить с нами радость этого незабываемого дня.
     </p>
-    <div class="greet-dt">20.08.2026 &nbsp;·&nbsp; 18:00</div>
-    <div class="photo-rect">
-      <span class="ph"><img src="3.jpg" alt=""></span>
-    </div>
+  
     <div class="cursive-line">Там, где поселили любовь,<br>расцветёт радость!</div>
   </section>
 
-  <section class="reveal">
-    <div class="section-label">ЖЕНИХ И НЕВЕСТА</div>
-    <div class="couple-grid">
-      <div class="person-block">
-        <div class="photo-circle"><span class="ph">Жених</span></div>
-        <div class="person-role">Жених</div>
-      </div>
-      <div class="person-block">
-        <div class="photo-circle"><span class="ph">Невеста</span></div>
-        <div class="person-role">Невеста</div>
-      </div>
-    </div>
-  </section>
-
+ 
   <section class="reveal highlight">
     <div class="info-card">
       <div class="info-card-title">ПОЖЕЛАНИЯ ПО ПОДАРКАМ</div>
@@ -1050,10 +1014,14 @@ textarea:focus {
 
   <section class="reveal">
     <div class="date-toggle">
-      <button class="date-btn active" onclick="switchDay('19')" id="btn-19">19.08.26</button>
-      <button class="date-btn" onclick="switchDay('20')" id="btn-20">20.08.26</button>
+      <!-- Убрали active -->
+      <button class="date-btn" onclick="switchDay('19')" id="btn-19">19.08.26</button>
+      <!-- Добавили active -->
+      <button class="date-btn active" onclick="switchDay('20')" id="btn-20">20.08.26</button>
     </div>
-    <div class="schedule-panel visible" id="panel-19">
+    
+    <!-- Убрали visible -->
+    <div class="schedule-panel" id="panel-19">
       <div class="schedule-title">Свадебное расписание</div>
       <div class="sched-item">
         <div class="sched-time">18:00</div>
@@ -1072,40 +1040,46 @@ textarea:focus {
         </div>
       </div>
     </div>
-    <div class="schedule-panel" id="panel-20">
+    
+    <div class="schedule-panel visible" id="panel-20">
       <div class="schedule-title">Свадебное расписание</div>
+      
       <div class="sched-item">
-        <div class="sched-time">12:00</div>
-        <div>
-          <div class="sched-event-title">Торжественная регистрация</div>
-          <div class="sched-place">Английская набережная, 28</div>
-          <div class="sched-desc">Наша регистрация пройдёт в залах ЗАГСа Адмиралтейского района</div>
-        </div>
-      </div>
-      <div class="sched-item">
-        <div class="sched-time">14:00</div>
-        <div>
-          <div class="sched-event-title">Фуршет</div>
-          <div class="sched-place">Ресторан</div>
-          <div class="sched-desc">Время пролетит незаметно за фуршетом и общением</div>
-        </div>
-      </div>
-      <div class="sched-item">
-        <div class="sched-time">15:00</div>
+        <div class="sched-time">13:00</div>
         <div>
           <div class="sched-event-title">Фотосессия</div>
           <div class="sched-place">Фотостудия</div>
-          <div class="sched-desc">Время узнать друг друга поближе и пофотографироваться</div>
+          <div class="sched-desc">Начинаем этот прекрасный день со свадебной фотосессии</div>
         </div>
       </div>
+      
+      <div class="sched-item">
+        <div class="sched-time">15:00</div>
+        <div>
+          <div class="sched-event-title">Фуршет</div>
+          <div class="sched-place">Ресторан</div>
+          <div class="sched-desc">Время немного перекусить, пообщаться и дождаться остальных гостей</div>
+        </div>
+      </div>
+      
+      <div class="sched-item">
+        <div class="sched-time">16:30</div>
+        <div>
+          <div class="sched-event-title">Свадебная прогулка</div>
+          <div class="sched-place">Парк / Красивые локации города</div>
+          <div class="sched-desc">Время для совместных фотографий и прогулки на свежем воздухе</div>
+        </div>
+      </div>
+      
       <div class="sched-item">
         <div class="sched-time">18:00</div>
         <div>
           <div class="sched-event-title">Праздничный банкет</div>
           <div class="sched-place">Банкетный зал · Ресторан «Корона»</div>
-          <div class="sched-desc">Здесь пройдёт наш праздничный банкет</div>
+          <div class="sched-desc">Главная торжественная часть, поздравления и веселье</div>
         </div>
       </div>
+      
       <div class="sched-item">
         <div class="sched-time">23:00</div>
         <div>
@@ -1115,7 +1089,7 @@ textarea:focus {
         </div>
       </div>
     </div>
-  </section>
+</section>
 
   <div class="footer">
     <div class="footer-names">Azizbek and Sarvinoz</div>
