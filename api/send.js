@@ -16,6 +16,7 @@ export default async function handler(req, res) {
   const TG_CHAT_IDS = [
     process.env.TG_CHAT_ID_1,
     process.env.TG_CHAT_ID_2,
+    process.env.TG_CHAT_ID_3,
   ].filter(Boolean); // Убирает пустые строки, если какого-то ID нет в .env
 
   // 4. Данные для ВК
