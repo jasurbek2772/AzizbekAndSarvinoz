@@ -5,24 +5,66 @@ export default async function handler(req, res) {
 
   const { text } = req.body;
 
-  const TOKEN = process.env.TG_BOT_TOKEN;
-  const CHAT_IDS = [
+  // Проверяем, что текст вообще передан
+  if (!text) {
+    return res.status(400).json({ error: 'Missing text parameter' });
+  }
+
+  // Данные для Telegram
+  const TG_TOKEN = process.env.TG_BOT_TOKEN;
+  const TG_CHAT_IDS = [
     process.env.TG_CHAT_ID_1,
     process.env.TG_CHAT_ID_2,
   ];
 
-  try {
-    const results = await Promise.all(
-      CHAT_IDS.map((chat_id) =>
-        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id, text, parse_mode: 'HTML' }),
-        }).then((r) => r.json())
-      )
-    );
+  // Данные для ВК
+  const VK_TOKEN = process.env.VK_BOT_TOKEN;
+  const VK_USER_ID = process.env.VK_USER_ID;
 
-    return res.status(200).json(results);
+  try {
+    const promises = [];
+
+    // 1. Очередь отправки в Telegram (если токен и ID настроены)
+    if (TG_TOKEN && TG_CHAT_IDS.length > 0) {
+      TG_CHAT_IDS.forEach((chat_id) => {
+        if (chat_id) {
+          const tgPromise = fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id, text, parse_mode: 'HTML' }),
+          }).then((r) => r.json().then(data => ({ platform: 'telegram', chat_id, data })));
+          
+          promises.push(tgPromise);
+        }
+      });
+    }
+
+    // 2. Очередь отправки в ВК (если токен и ID настроены)
+    if (VK_TOKEN && VK_USER_ID) {
+      const vkParams = new URLSearchParams({
+        access_token: VK_TOKEN,
+        user_id: VK_USER_ID,
+        message: text,
+        random_id: Math.floor(Math.random() * 2147483647),
+        v: '5.131'
+      });
+
+      const vkPromise = fetch(`https://api.vk.com/method/messages.send?${vkParams.toString()}`, {
+        method: 'POST'
+      }).then((r) => r.json().then(data => ({ platform: 'vk', data })));
+
+      promises.push(vkPromise);
+    }
+
+    // Если ничего не настроено, отдаем ошибку конфигурации
+    if (promises.length === 0) {
+      return res.status(500).json({ error: 'Server configuration error: no platforms configured' });
+    }
+
+    // Запускаем все запросы одновременно
+    const results = await Promise.all(promises);
+
+    return res.status(200).json({ success: true, results });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
