@@ -48,17 +48,43 @@ body {
   overflow-x: hidden;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
 #intro {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  background: #fdfdfd;
 }
 
+.handwriting-container {
+  font-family: 'Great Vibes', cursive;
+  font-size: 4rem;
+  color: #8b5a5a;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.text-reveal {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  animation: drawText 2.5s ease-in-out forwards;
+}
+
+@keyframes drawText {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .handwriting-container {
+    font-size: 3rem;
+  }
+}
 .card-wrapper {
   width: 94%;
   max-width: 420px;
@@ -814,30 +840,8 @@ textarea:focus {
 <body>
 
 <div id="intro">
-  <div class="card-wrapper">
-    <div class="env-stage" id="envStage">
-      <div class="env-body">
-        <div class="env-triangle bottom"></div>
-        <div class="env-triangle left"></div>
-        <div class="env-triangle right"></div>
-        <div class="env-triangle top">
-          <div class="card-inscription">
-            <div class="ins-title">Приглашение</div>
-            <div class="ins-amp">&amp;</div>
-            <div class="ins-sub">Свадебное торжество</div>
-          </div>
-        </div>
-        <div class="wax-seal" onclick="openEnvelope()">
-          <span>ОТКРЫТЬ</span>
-        </div>
-        <div class="env-triangle bottom">
-          <div class="card-hint">
-            <div class="hint-text">Листайте вниз</div>
-            <div class="hint-arrow">↓</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="handwriting-container" onclick="openEnvelope()">
+    <div class="text-reveal">Мы женимся!</div>
   </div>
 </div>
 
@@ -1123,17 +1127,22 @@ let envelopeOpened = false;
 function openEnvelope() {
   if (envelopeOpened) return;
   envelopeOpened = true;
-  const stage = document.getElementById('envStage');
+
   const intro = document.getElementById('intro');
   const mainContent = document.getElementById('main-content');
-  stage.classList.add('open');
+
   document.body.style.overflow = 'auto';
   document.documentElement.style.overflow = 'auto';
-  if (mainContent) mainContent.classList.add('visible');
-  setTimeout(() => {
+
+  if (mainContent) {
+    mainContent.classList.add('visible');
+  }
+
+  if (intro) {
+    intro.style.transition = 'opacity 0.8s ease';
     intro.style.opacity = '0';
-    setTimeout(() => { intro.remove(); }, 1000);
-  }, 600);
+    setTimeout(() => intro.remove(), 800);
+  }
 }
 
 window.addEventListener('wheel', (e) => {
